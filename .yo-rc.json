@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "bf.e_fixell_backoffice"
+    },
+    "jhipsterVersion": "6.8.0",
+    "applicationType": "monolith",
+    "baseName": "e_fixell_backoffice",
+    "packageName": "bf.e_fixell_backoffice",
+    "packageFolder": "bf/e_fixell_backoffice",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZWRlYWNlMzJkMjU4NjBmZTU1OGQ1ZDc0MDNiY2RmN2ZiZjcwNmMwZWZhZDAyYmM2ZTdiMTQ5MmQ1ZWRlMTZkNWY4MzRiYjc0ZGI0YWYzNDFkYTg1ZTU5N2MzMGZiZGJkMTVjODdiNDQ4NzI3ODNiZmE0NWY4N2M3ZDhlMzcyYTQ=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "skipClient": true,
+    "creationTimestamp": 1628843965876,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}

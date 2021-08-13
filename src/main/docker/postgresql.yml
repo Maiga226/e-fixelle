@@ -1,0 +1,11 @@
+version: '2'
+services:
+  e_fixell_backoffice-postgresql:
+    image: postgres:12.1
+    # volumes:
+    #     - ~/volumes/jhipster/e_fixell_backoffice/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=e_fixell_backoffice
+      - POSTGRES_PASSWORD=
+    ports:
+      - 5432:5432

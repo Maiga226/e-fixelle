@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the colunm profil_id and personnel_id in entity user.
+    -->
+
+    <changeSet id="140820212141" author="sapiens">
+        <addColumn tableName="jhi_user">
+            <column name="profil_id" type="bigint"></column>
+        </addColumn>
+        <addColumn tableName="jhi_user">
+            <column name="personnel_id" type="bigint"></column>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="personnel_id"
+                                 baseTableName="jhi_user"
+                                 constraintName="fk_user_personnel_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="personnel"/>
+
+        <addForeignKeyConstraint baseColumnNames="profil_id"
+                                 baseTableName="jhi_user"
+                                 constraintName="fk_user_profil_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profil"/>
+    </changeSet>
+</databaseChangeLog>

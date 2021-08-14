@@ -1,0 +1,47 @@
+{
+  "name": "Frais",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "valeur",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "frais",
+      "relationshipName": "commande",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "typeFrais",
+      "otherEntityRelationshipName": "frais",
+      "relationshipName": "typeFrais",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "livraison",
+      "otherEntityRelationshipName": "frais",
+      "relationshipName": "livraison",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814221722",
+  "entityTableName": "frais",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

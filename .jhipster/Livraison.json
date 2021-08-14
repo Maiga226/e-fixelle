@@ -1,0 +1,76 @@
+{
+  "name": "Livraison",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "somme",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "etat",
+      "fieldType": "Etat",
+      "fieldValues": "ANNULER,PROVISOIRE,VALIDER"
+    },
+    {
+      "fieldName": "motif",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "transaction",
+      "otherEntityRelationshipName": "livraison",
+      "relationshipName": "transaction"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "frais",
+      "otherEntityRelationshipName": "livraison",
+      "relationshipName": "frais"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "livraison",
+      "relationshipName": "commande",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "fournisseur",
+      "otherEntityRelationshipName": "livraison",
+      "relationshipName": "fournisseur",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "transport",
+      "otherEntityRelationshipName": "livraison",
+      "relationshipName": "transport",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814220522",
+  "entityTableName": "livraison",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

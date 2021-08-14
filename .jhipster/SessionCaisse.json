@@ -1,0 +1,74 @@
+{
+  "name": "SessionCaisse",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "sommeDebut",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "sommeFin",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "depassement",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "manquant",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "Statut",
+      "fieldValues": "OUVERT,FERME,ACTIF,INACTIF"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "paiement",
+      "otherEntityRelationshipName": "sessioncaisse",
+      "relationshipName": "paiement"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "depense",
+      "otherEntityRelationshipName": "sessionCaisse",
+      "relationshipName": "depense"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "caisse",
+      "otherEntityRelationshipName": "sessionCaisse",
+      "relationshipName": "caisse",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814220822",
+  "entityTableName": "session_caisse",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

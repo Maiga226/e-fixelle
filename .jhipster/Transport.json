@@ -1,0 +1,36 @@
+{
+  "name": "Transport",
+  "fields": [
+    {
+      "fieldName": "typeTransport",
+      "fieldType": "TypeTransport",
+      "fieldValues": "MARITIME,AERIEN,ROUTIERE"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "livraison",
+      "otherEntityRelationshipName": "transport",
+      "relationshipName": "livraison"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "societeTransport",
+      "otherEntityRelationshipName": "transport",
+      "relationshipName": "societeTransport",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814222022",
+  "entityTableName": "transport",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

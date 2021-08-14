@@ -1,0 +1,80 @@
+{
+  "name": "Fournisseur",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "raisonSocial",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "rue",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fixe",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "codePostale",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "numeroReseauSocial",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "typePersonne",
+      "fieldType": "TypePersonne",
+      "fieldValues": "MORALE,PHYSIQUE"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "fournisseur",
+      "relationshipName": "commande"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "approvisionnement",
+      "otherEntityRelationshipName": "fournisseur",
+      "relationshipName": "approvisionnement"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "livraison",
+      "otherEntityRelationshipName": "fournisseur",
+      "relationshipName": "livraison"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "uniteOrganisation",
+      "otherEntityRelationshipName": "fournisseur",
+      "relationshipName": "adresse",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814220322",
+  "entityTableName": "fournisseur",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

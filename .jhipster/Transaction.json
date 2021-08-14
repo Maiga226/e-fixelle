@@ -1,0 +1,91 @@
+{
+  "name": "Transaction",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "quantite",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "prixUnitaire",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "typeTransaction",
+      "fieldType": "TypeTransaction",
+      "fieldValues": "COMMANDE,APPROVISIONNEMENT,LIVRAISON,VENTE"
+    },
+    {
+      "fieldName": "etat",
+      "fieldType": "Etat",
+      "fieldValues": "ANNULER,PROVISOIRE,VALIDER"
+    },
+    {
+      "fieldName": "motif",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "ficheTechnique",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "ficheTechnique",
+      "otherEntityField": "id",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "produit",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "produit",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "commande",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "approvisionnement",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "approvisionnement",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "livraison",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "livraison",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "vente",
+      "otherEntityRelationshipName": "transaction",
+      "relationshipName": "vente",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814220222",
+  "entityTableName": "transaction",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

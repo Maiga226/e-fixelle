@@ -1,0 +1,42 @@
+{
+  "name": "PrixProduit",
+  "fields": [
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "prix",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "Statut",
+      "fieldValues": "OUVERT,FERME,ACTIF,INACTIF"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "produit",
+      "otherEntityRelationshipName": "prixProduit",
+      "relationshipName": "produit",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814215722",
+  "entityTableName": "prix_produit",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

@@ -1,0 +1,41 @@
+{
+  "name": "OperationCaisse",
+  "fields": [
+    {
+      "fieldName": "typeOperationCaisse",
+      "fieldType": "TypeOperationCaisse",
+      "fieldValues": "APPROVISIONNEMENT,REVERSEMENT"
+    },
+    {
+      "fieldName": "montant",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "caisse",
+      "otherEntityRelationshipName": "operationCaisse",
+      "relationshipName": "caisseSrc",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "caisse",
+      "otherEntityRelationshipName": "operationCaisse",
+      "relationshipName": "caisseDst",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814222422",
+  "entityTableName": "operation_caisse",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

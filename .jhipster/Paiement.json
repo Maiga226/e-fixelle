@@ -1,0 +1,51 @@
+{
+  "name": "Paiement",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "montant",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "paiement",
+      "relationshipName": "commande",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "vente",
+      "otherEntityRelationshipName": "paiement",
+      "relationshipName": "vente",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "sessionCaisse",
+      "otherEntityRelationshipName": "paiement",
+      "relationshipName": "sessioncaisse",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814221322",
+  "entityTableName": "paiement",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

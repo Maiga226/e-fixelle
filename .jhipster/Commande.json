@@ -1,0 +1,93 @@
+{
+  "name": "Commande",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "date",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "somme",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "dateLivraisonPrevu",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "etat",
+      "fieldType": "Etat",
+      "fieldValues": "ANNULER,PROVISOIRE,VALIDER"
+    },
+    {
+      "fieldName": "motif",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "avance",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "avanceEnPercent",
+      "fieldType": "Boolean"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "transaction",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "transaction"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "livraison",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "livraison"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "paiement",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "paiement"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "frais",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "frais"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "fournisseur",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "fournisseur",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "client",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "client",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814215822",
+  "entityTableName": "commande",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

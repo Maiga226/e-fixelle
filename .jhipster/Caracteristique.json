@@ -1,0 +1,33 @@
+{
+  "name": "Caracteristique",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "valeur",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "ficheTechnique",
+      "otherEntityRelationshipName": "caracteristique",
+      "relationshipName": "ficheTechnique",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814222322",
+  "entityTableName": "caracteristique",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

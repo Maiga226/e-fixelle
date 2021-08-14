@@ -1,0 +1,32 @@
+{
+  "name": "TypeDepense",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "depense",
+      "otherEntityRelationshipName": "typeDepense",
+      "relationshipName": "depense"
+    }
+  ],
+  "changelogDate": "20210814221022",
+  "entityTableName": "type_depense",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

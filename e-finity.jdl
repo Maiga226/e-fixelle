@@ -1,0 +1,303 @@
+entity Produit {
+	code String,
+	libelle String,
+    quantite Integer,
+    hsCode String
+}
+
+entity PrixProduit {
+	dateDebut Instant,
+	dateFin Instant,
+	prix BigDecimal,
+    statut Statut,
+}
+
+entity Commande {
+	code String,
+    libelle String,
+	date Instant,
+	somme BigDecimal,
+    dateLivraisonPrevu Instant,
+    etat Etat,
+    motif String,
+    avance BigDecimal,
+    avanceEnPercent Boolean
+}
+
+entity Categorie {
+	libelle String,
+    description String
+}
+
+entity Perte {
+	libelle String,
+    date Instant,
+    quantite Integer,
+    montant BigDecimal
+}
+
+entity Approvisionnement {
+	code String,
+    libelle String,
+	date Instant,
+    montant BigDecimal
+}
+
+entity Transaction {
+	code String,
+    date Instant,
+	quantite Integer,
+    prixUnitaire BigDecimal,
+    typeTransaction TypeTransaction,
+    etat Etat,
+    motif String
+}
+
+entity Fournisseur {
+	nom String,
+	prenom String,
+    raisonSocial String,
+    rue String,
+    telephone String,
+    fixe String,
+    codePostale String,
+    numeroReseauSocial String,
+    typePersonne TypePersonne
+}
+
+entity Client {
+	nom String,
+	prenom String,
+    raisonSocial String,
+    adresse String,
+    telephone String,
+    identifiant String,
+    typePersonne TypePersonne
+}
+
+entity Livraison {
+	code String,
+    libelle String,
+	date Instant,
+	somme BigDecimal,
+    etat Etat,
+    motif String
+}
+
+entity Caisse {
+	code String,
+    libelle String,
+    sommeMin BigDecimal,
+    sommeMax BigDecimal,
+    somme BigDecimal,
+    statut Statut,
+    typeCaisse TypeCaisse
+}
+
+entity UniteOrganisation {
+	libelle String,
+    type  TypeUniteOrganisation
+}
+
+entity SessionCaisse {
+	code Long,
+    libelle String,
+    dateDebut Instant,
+    dateFin Instant,
+    sommeDebut BigDecimal,
+    sommeFin BigDecimal,
+    depassement BigDecimal,
+    manquant BigDecimal,
+    statut Statut,
+}
+
+entity Depense {
+	libelle String,
+	description String,
+    montant BigDecimal
+} 
+
+entity TypeDepense {
+	code String,
+	libelle String
+}
+
+entity Profil {
+	libelle String,
+	description String
+}
+
+entity Vente {
+	libelle String,
+	code String,
+	date Instant,
+    montant BigDecimal,
+    reste BigDecimal,
+    solder Boolean
+}
+
+entity Paiement {
+	code String,
+	date Instant,
+	montant BigDecimal
+}
+
+entity Fonction {
+	libelle String,
+    description String,
+	salaireMin Float,
+	salaireMax Float
+}
+
+entity Personnel {
+	nom String,
+	prenom String,
+    telephone String,
+    matricule String,
+    salaire BigDecimal
+}
+
+entity HistoriqueAffectation {
+	dateDebut Instant,
+	dateFin Instant,
+    salaire BigDecimal
+}
+
+entity Frais {
+	libelle String,
+    valeur BigDecimal
+}
+
+entity TypeFrais {
+//frais de transaction en ligne, de dédouanement
+	libelle String
+}
+
+entity Classification {
+//produit dangereux, standard 
+    libelle String
+}
+
+entity Transport {
+	typeTransport TypeTransport
+}
+
+entity SocieteTransport{
+	libelle String,
+    adresse String,
+    telephone String,
+    email String
+}
+
+entity FicheTechnique {
+	libelle String
+}
+
+entity Caracteristique {
+	libelle String,
+    valeur String
+}
+
+entity OperationCaisse{
+	typeOperationCaisse TypeOperationCaisse,
+    montant BigDecimal,
+}
+
+enum TypeOperationCaisse {
+    APPROVISIONNEMENT, REVERSEMENT
+}
+
+enum Etat {
+    ANNULER, PROVISOIRE, VALIDER
+}
+
+enum Statut {
+    OUVERT, FERME, ACTIF, INACTIF
+}
+
+enum TypeTransaction {
+	COMMANDE, APPROVISIONNEMENT, LIVRAISON, VENTE
+}
+
+enum TypeUser {
+	ADMIN, CAISSIER, SUPER_ADMIN
+}
+
+enum TypePersonne {
+    MORALE, PHYSIQUE
+}
+
+enum TypeUniteOrganisation {
+    PAYS, REGION, PROVINCE, VILLE
+}
+
+enum TypeCaisse {
+    SECONDAIRE, PRINCIPALE, CENTRALE
+}
+enum TypeTransport {
+	MARITIME, AERIEN, ROUTIERE
+}
+relationship OneToOne {
+	Transaction{ficheTechnique} to FicheTechnique
+    
+    // A gerer manuellement
+	// User{personnel} to Personnel
+    
+}
+
+relationship OneToMany {
+	Produit to PrixProduit{produit}
+    Produit to Perte{produit}
+    Produit to Transaction{produit} 
+    
+    Categorie to Produit{categorie}
+    
+    Commande to Transaction{commande}
+    Commande to Livraison{commande}
+    Commande to Paiement{commande}
+    Commande to Frais{commande}
+    
+    
+    Fournisseur to Commande{fournisseur}
+    Fournisseur to Approvisionnement{fournisseur}
+    Fournisseur to Livraison{fournisseur}
+    
+    UniteOrganisation to Fournisseur{adresse}
+    
+    Client to Commande{client}
+    Client to Vente{client}
+    
+    
+    Approvisionnement to Transaction{approvisionnement}
+    
+	Livraison to Transaction{livraison}   
+    
+    Vente to Transaction{vente}
+    Vente to Paiement{vente}
+    
+    Personnel to HistoriqueAffectation{personnel}
+    
+    Fonction to HistoriqueAffectation{fonction}
+    
+    Caisse to SessionCaisse{caisse}
+    Caisse to OperationCaisse{caisseSrc}
+    Caisse to OperationCaisse{caisseDst}
+    SessionCaisse to Paiement{sessioncaisse}
+    
+    TypeDepense to Depense{typeDepense}
+    SessionCaisse to Depense{sessionCaisse}
+  
+  // A gerer manuellement
+  //  Profil to User{profile}
+   // User to SessionCaisse{user}
+    
+    Classification to Produit{classification}
+    FicheTechnique to Caracteristique{ficheTechnique}
+    TypeFrais to Frais{typeFrais} 
+    SocieteTransport to Transport{societeTransport}
+    Transport to Livraison{transport}
+    Livraison to Frais{livraison}
+}
+
+
+

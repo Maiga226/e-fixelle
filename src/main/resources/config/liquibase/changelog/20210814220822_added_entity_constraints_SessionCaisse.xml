@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <!--
+        Added the constraints for entity SessionCaisse.
+    -->
+    <changeSet id="20210814220822-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="caisse_id"
+                                 baseTableName="session_caisse"
+                                 constraintName="fk_session_caisse_caisse_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="caisse"/>
+
+    </changeSet>
+</databaseChangeLog>

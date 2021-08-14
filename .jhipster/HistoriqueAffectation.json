@@ -1,0 +1,44 @@
+{
+  "name": "HistoriqueAffectation",
+  "fields": [
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "salaire",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "personnel",
+      "otherEntityRelationshipName": "historiqueAffectation",
+      "relationshipName": "personnel",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "fonction",
+      "otherEntityRelationshipName": "historiqueAffectation",
+      "relationshipName": "fonction",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814221622",
+  "entityTableName": "historique_affectation",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

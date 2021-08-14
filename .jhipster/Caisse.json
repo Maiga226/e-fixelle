@@ -1,0 +1,66 @@
+{
+  "name": "Caisse",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "sommeMin",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "sommeMax",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "somme",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "Statut",
+      "fieldValues": "OUVERT,FERME,ACTIF,INACTIF"
+    },
+    {
+      "fieldName": "typeCaisse",
+      "fieldType": "TypeCaisse",
+      "fieldValues": "SECONDAIRE,PRINCIPALE,CENTRALE"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "sessionCaisse",
+      "otherEntityRelationshipName": "caisse",
+      "relationshipName": "sessionCaisse"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "operationCaisse",
+      "otherEntityRelationshipName": "caisseSrc",
+      "relationshipName": "operationCaisse"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "operationCaisse",
+      "otherEntityRelationshipName": "caisseDst",
+      "relationshipName": "operationCaisse"
+    }
+  ],
+  "changelogDate": "20210814220622",
+  "entityTableName": "caisse",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Depense",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "montant",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "typeDepense",
+      "otherEntityRelationshipName": "depense",
+      "relationshipName": "typeDepense",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "sessionCaisse",
+      "otherEntityRelationshipName": "depense",
+      "relationshipName": "sessionCaisse",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814220922",
+  "entityTableName": "depense",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

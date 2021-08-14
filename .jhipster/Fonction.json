@@ -1,0 +1,40 @@
+{
+  "name": "Fonction",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "salaireMin",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "salaireMax",
+      "fieldType": "Float"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "historiqueAffectation",
+      "otherEntityRelationshipName": "fonction",
+      "relationshipName": "historiqueAffectation"
+    }
+  ],
+  "changelogDate": "20210814221422",
+  "entityTableName": "fonction",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

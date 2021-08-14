@@ -1,0 +1,66 @@
+{
+  "name": "Produit",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "quantite",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "hsCode",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "prixProduit",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "prixProduit"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "perte",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "perte"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "transaction",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "transaction"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "categorie",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "categorie",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "classification",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "classification",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20210814215622",
+  "entityTableName": "produit",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

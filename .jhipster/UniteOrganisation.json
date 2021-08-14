@@ -1,0 +1,33 @@
+{
+  "name": "UniteOrganisation",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "TypeUniteOrganisation",
+      "fieldValues": "PAYS,REGION,PROVINCE,VILLE"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "fournisseur",
+      "otherEntityRelationshipName": "adresse",
+      "relationshipName": "fournisseur"
+    }
+  ],
+  "changelogDate": "20210814220722",
+  "entityTableName": "unite_organisation",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

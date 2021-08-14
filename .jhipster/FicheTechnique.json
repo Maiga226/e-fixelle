@@ -1,0 +1,28 @@
+{
+  "name": "FicheTechnique",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "caracteristique",
+      "otherEntityRelationshipName": "ficheTechnique",
+      "relationshipName": "caracteristique"
+    }
+  ],
+  "changelogDate": "20210814222222",
+  "entityTableName": "fiche_technique",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

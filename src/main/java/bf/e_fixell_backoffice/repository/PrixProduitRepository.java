@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PrixProduitRepository extends JpaRepository<PrixProduit, Long> {
+public interface PrixProduitRepository extends JpaRepository<PrixProduit, Long>, JpaSpecificationExecutor<PrixProduit> {
 }

@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.Categorie;
-import bf.e_fixell_backoffice.repository.CategorieRepository;
+import bf.e_fixell_backoffice.service.CategorieService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.CategorieDTO;
+import bf.e_fixell_backoffice.service.dto.CategorieCriteria;
+import bf.e_fixell_backoffice.service.CategorieQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class CategorieResource {
 
     private final Logger log = LoggerFactory.getLogger(CategorieResource.class);
@@ -33,26 +39,29 @@ public class CategorieResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final CategorieRepository categorieRepository;
+    private final CategorieService categorieService;
 
-    public CategorieResource(CategorieRepository categorieRepository) {
-        this.categorieRepository = categorieRepository;
+    private final CategorieQueryService categorieQueryService;
+
+    public CategorieResource(CategorieService categorieService, CategorieQueryService categorieQueryService) {
+        this.categorieService = categorieService;
+        this.categorieQueryService = categorieQueryService;
     }
 
     /**
      * {@code POST  /categories} : Create a new categorie.
      *
-     * @param categorie the categorie to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new categorie, or with status {@code 400 (Bad Request)} if the categorie has already an ID.
+     * @param categorieDTO the categorieDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new categorieDTO, or with status {@code 400 (Bad Request)} if the categorie has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/categories")
-    public ResponseEntity<Categorie> createCategorie(@RequestBody Categorie categorie) throws URISyntaxException {
-        log.debug("REST request to save Categorie : {}", categorie);
-        if (categorie.getId() != null) {
+    public ResponseEntity<CategorieDTO> createCategorie(@RequestBody CategorieDTO categorieDTO) throws URISyntaxException {
+        log.debug("REST request to save Categorie : {}", categorieDTO);
+        if (categorieDTO.getId() != null) {
             throw new BadRequestAlertException("A new categorie cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Categorie result = categorieRepository.save(categorie);
+        CategorieDTO result = categorieService.save(categorieDTO);
         return ResponseEntity.created(new URI("/api/categories/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class CategorieResource {
     /**
      * {@code PUT  /categories} : Updates an existing categorie.
      *
-     * @param categorie the categorie to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated categorie,
-     * or with status {@code 400 (Bad Request)} if the categorie is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the categorie couldn't be updated.
+     * @param categorieDTO the categorieDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated categorieDTO,
+     * or with status {@code 400 (Bad Request)} if the categorieDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the categorieDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/categories")
-    public ResponseEntity<Categorie> updateCategorie(@RequestBody Categorie categorie) throws URISyntaxException {
-        log.debug("REST request to update Categorie : {}", categorie);
-        if (categorie.getId() == null) {
+    public ResponseEntity<CategorieDTO> updateCategorie(@RequestBody CategorieDTO categorieDTO) throws URISyntaxException {
+        log.debug("REST request to update Categorie : {}", categorieDTO);
+        if (categorieDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Categorie result = categorieRepository.save(categorie);
+        CategorieDTO result = categorieService.save(categorieDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, categorie.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, categorieDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /categories} : get all the categories.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of categories in body.
      */
     @GetMapping("/categories")
-    public List<Categorie> getAllCategories() {
-        log.debug("REST request to get all Categories");
-        return categorieRepository.findAll();
+    public ResponseEntity<List<CategorieDTO>> getAllCategories(CategorieCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Categories by criteria: {}", criteria);
+        Page<CategorieDTO> page = categorieQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /categories/count} : count all the categories.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/categories/count")
+    public ResponseEntity<Long> countCategories(CategorieCriteria criteria) {
+        log.debug("REST request to count Categories by criteria: {}", criteria);
+        return ResponseEntity.ok().body(categorieQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /categories/:id} : get the "id" categorie.
      *
-     * @param id the id of the categorie to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the categorie, or with status {@code 404 (Not Found)}.
+     * @param id the id of the categorieDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the categorieDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/categories/{id}")
-    public ResponseEntity<Categorie> getCategorie(@PathVariable Long id) {
+    public ResponseEntity<CategorieDTO> getCategorie(@PathVariable Long id) {
         log.debug("REST request to get Categorie : {}", id);
-        Optional<Categorie> categorie = categorieRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(categorie);
+        Optional<CategorieDTO> categorieDTO = categorieService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(categorieDTO);
     }
 
     /**
      * {@code DELETE  /categories/:id} : delete the "id" categorie.
      *
-     * @param id the id of the categorie to delete.
+     * @param id the id of the categorieDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategorie(@PathVariable Long id) {
         log.debug("REST request to delete Categorie : {}", id);
-        categorieRepository.deleteById(id);
+        categorieService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

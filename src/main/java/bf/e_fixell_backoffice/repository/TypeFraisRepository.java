@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TypeFraisRepository extends JpaRepository<TypeFrais, Long> {
+public interface TypeFraisRepository extends JpaRepository<TypeFrais, Long>, JpaSpecificationExecutor<TypeFrais> {
 }

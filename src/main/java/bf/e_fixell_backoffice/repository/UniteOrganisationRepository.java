@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UniteOrganisationRepository extends JpaRepository<UniteOrganisation, Long> {
+public interface UniteOrganisationRepository extends JpaRepository<UniteOrganisation, Long>, JpaSpecificationExecutor<UniteOrganisation> {
 }

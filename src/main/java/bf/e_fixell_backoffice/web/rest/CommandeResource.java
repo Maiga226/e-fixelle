@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.Commande;
-import bf.e_fixell_backoffice.repository.CommandeRepository;
+import bf.e_fixell_backoffice.service.CommandeService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.CommandeDTO;
+import bf.e_fixell_backoffice.service.dto.CommandeCriteria;
+import bf.e_fixell_backoffice.service.CommandeQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class CommandeResource {
 
     private final Logger log = LoggerFactory.getLogger(CommandeResource.class);
@@ -33,26 +39,29 @@ public class CommandeResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final CommandeRepository commandeRepository;
+    private final CommandeService commandeService;
 
-    public CommandeResource(CommandeRepository commandeRepository) {
-        this.commandeRepository = commandeRepository;
+    private final CommandeQueryService commandeQueryService;
+
+    public CommandeResource(CommandeService commandeService, CommandeQueryService commandeQueryService) {
+        this.commandeService = commandeService;
+        this.commandeQueryService = commandeQueryService;
     }
 
     /**
      * {@code POST  /commandes} : Create a new commande.
      *
-     * @param commande the commande to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new commande, or with status {@code 400 (Bad Request)} if the commande has already an ID.
+     * @param commandeDTO the commandeDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new commandeDTO, or with status {@code 400 (Bad Request)} if the commande has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/commandes")
-    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande) throws URISyntaxException {
-        log.debug("REST request to save Commande : {}", commande);
-        if (commande.getId() != null) {
+    public ResponseEntity<CommandeDTO> createCommande(@RequestBody CommandeDTO commandeDTO) throws URISyntaxException {
+        log.debug("REST request to save Commande : {}", commandeDTO);
+        if (commandeDTO.getId() != null) {
             throw new BadRequestAlertException("A new commande cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Commande result = commandeRepository.save(commande);
+        CommandeDTO result = commandeService.save(commandeDTO);
         return ResponseEntity.created(new URI("/api/commandes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class CommandeResource {
     /**
      * {@code PUT  /commandes} : Updates an existing commande.
      *
-     * @param commande the commande to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated commande,
-     * or with status {@code 400 (Bad Request)} if the commande is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the commande couldn't be updated.
+     * @param commandeDTO the commandeDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated commandeDTO,
+     * or with status {@code 400 (Bad Request)} if the commandeDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the commandeDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/commandes")
-    public ResponseEntity<Commande> updateCommande(@RequestBody Commande commande) throws URISyntaxException {
-        log.debug("REST request to update Commande : {}", commande);
-        if (commande.getId() == null) {
+    public ResponseEntity<CommandeDTO> updateCommande(@RequestBody CommandeDTO commandeDTO) throws URISyntaxException {
+        log.debug("REST request to update Commande : {}", commandeDTO);
+        if (commandeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Commande result = commandeRepository.save(commande);
+        CommandeDTO result = commandeService.save(commandeDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, commande.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, commandeDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /commandes} : get all the commandes.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of commandes in body.
      */
     @GetMapping("/commandes")
-    public List<Commande> getAllCommandes() {
-        log.debug("REST request to get all Commandes");
-        return commandeRepository.findAll();
+    public ResponseEntity<List<CommandeDTO>> getAllCommandes(CommandeCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Commandes by criteria: {}", criteria);
+        Page<CommandeDTO> page = commandeQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /commandes/count} : count all the commandes.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/commandes/count")
+    public ResponseEntity<Long> countCommandes(CommandeCriteria criteria) {
+        log.debug("REST request to count Commandes by criteria: {}", criteria);
+        return ResponseEntity.ok().body(commandeQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /commandes/:id} : get the "id" commande.
      *
-     * @param id the id of the commande to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the commande, or with status {@code 404 (Not Found)}.
+     * @param id the id of the commandeDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the commandeDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/commandes/{id}")
-    public ResponseEntity<Commande> getCommande(@PathVariable Long id) {
+    public ResponseEntity<CommandeDTO> getCommande(@PathVariable Long id) {
         log.debug("REST request to get Commande : {}", id);
-        Optional<Commande> commande = commandeRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(commande);
+        Optional<CommandeDTO> commandeDTO = commandeService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(commandeDTO);
     }
 
     /**
      * {@code DELETE  /commandes/:id} : delete the "id" commande.
      *
-     * @param id the id of the commande to delete.
+     * @param id the id of the commandeDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/commandes/{id}")
     public ResponseEntity<Void> deleteCommande(@PathVariable Long id) {
         log.debug("REST request to delete Commande : {}", id);
-        commandeRepository.deleteById(id);
+        commandeService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

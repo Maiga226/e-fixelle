@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.TypeDepense;
-import bf.e_fixell_backoffice.repository.TypeDepenseRepository;
+import bf.e_fixell_backoffice.service.TypeDepenseService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.TypeDepenseDTO;
+import bf.e_fixell_backoffice.service.dto.TypeDepenseCriteria;
+import bf.e_fixell_backoffice.service.TypeDepenseQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class TypeDepenseResource {
 
     private final Logger log = LoggerFactory.getLogger(TypeDepenseResource.class);
@@ -33,26 +39,29 @@ public class TypeDepenseResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TypeDepenseRepository typeDepenseRepository;
+    private final TypeDepenseService typeDepenseService;
 
-    public TypeDepenseResource(TypeDepenseRepository typeDepenseRepository) {
-        this.typeDepenseRepository = typeDepenseRepository;
+    private final TypeDepenseQueryService typeDepenseQueryService;
+
+    public TypeDepenseResource(TypeDepenseService typeDepenseService, TypeDepenseQueryService typeDepenseQueryService) {
+        this.typeDepenseService = typeDepenseService;
+        this.typeDepenseQueryService = typeDepenseQueryService;
     }
 
     /**
      * {@code POST  /type-depenses} : Create a new typeDepense.
      *
-     * @param typeDepense the typeDepense to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new typeDepense, or with status {@code 400 (Bad Request)} if the typeDepense has already an ID.
+     * @param typeDepenseDTO the typeDepenseDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new typeDepenseDTO, or with status {@code 400 (Bad Request)} if the typeDepense has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/type-depenses")
-    public ResponseEntity<TypeDepense> createTypeDepense(@RequestBody TypeDepense typeDepense) throws URISyntaxException {
-        log.debug("REST request to save TypeDepense : {}", typeDepense);
-        if (typeDepense.getId() != null) {
+    public ResponseEntity<TypeDepenseDTO> createTypeDepense(@RequestBody TypeDepenseDTO typeDepenseDTO) throws URISyntaxException {
+        log.debug("REST request to save TypeDepense : {}", typeDepenseDTO);
+        if (typeDepenseDTO.getId() != null) {
             throw new BadRequestAlertException("A new typeDepense cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        TypeDepense result = typeDepenseRepository.save(typeDepense);
+        TypeDepenseDTO result = typeDepenseService.save(typeDepenseDTO);
         return ResponseEntity.created(new URI("/api/type-depenses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class TypeDepenseResource {
     /**
      * {@code PUT  /type-depenses} : Updates an existing typeDepense.
      *
-     * @param typeDepense the typeDepense to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated typeDepense,
-     * or with status {@code 400 (Bad Request)} if the typeDepense is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the typeDepense couldn't be updated.
+     * @param typeDepenseDTO the typeDepenseDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated typeDepenseDTO,
+     * or with status {@code 400 (Bad Request)} if the typeDepenseDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the typeDepenseDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/type-depenses")
-    public ResponseEntity<TypeDepense> updateTypeDepense(@RequestBody TypeDepense typeDepense) throws URISyntaxException {
-        log.debug("REST request to update TypeDepense : {}", typeDepense);
-        if (typeDepense.getId() == null) {
+    public ResponseEntity<TypeDepenseDTO> updateTypeDepense(@RequestBody TypeDepenseDTO typeDepenseDTO) throws URISyntaxException {
+        log.debug("REST request to update TypeDepense : {}", typeDepenseDTO);
+        if (typeDepenseDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        TypeDepense result = typeDepenseRepository.save(typeDepense);
+        TypeDepenseDTO result = typeDepenseService.save(typeDepenseDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, typeDepense.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, typeDepenseDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /type-depenses} : get all the typeDepenses.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of typeDepenses in body.
      */
     @GetMapping("/type-depenses")
-    public List<TypeDepense> getAllTypeDepenses() {
-        log.debug("REST request to get all TypeDepenses");
-        return typeDepenseRepository.findAll();
+    public ResponseEntity<List<TypeDepenseDTO>> getAllTypeDepenses(TypeDepenseCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get TypeDepenses by criteria: {}", criteria);
+        Page<TypeDepenseDTO> page = typeDepenseQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /type-depenses/count} : count all the typeDepenses.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/type-depenses/count")
+    public ResponseEntity<Long> countTypeDepenses(TypeDepenseCriteria criteria) {
+        log.debug("REST request to count TypeDepenses by criteria: {}", criteria);
+        return ResponseEntity.ok().body(typeDepenseQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /type-depenses/:id} : get the "id" typeDepense.
      *
-     * @param id the id of the typeDepense to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the typeDepense, or with status {@code 404 (Not Found)}.
+     * @param id the id of the typeDepenseDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the typeDepenseDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/type-depenses/{id}")
-    public ResponseEntity<TypeDepense> getTypeDepense(@PathVariable Long id) {
+    public ResponseEntity<TypeDepenseDTO> getTypeDepense(@PathVariable Long id) {
         log.debug("REST request to get TypeDepense : {}", id);
-        Optional<TypeDepense> typeDepense = typeDepenseRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(typeDepense);
+        Optional<TypeDepenseDTO> typeDepenseDTO = typeDepenseService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(typeDepenseDTO);
     }
 
     /**
      * {@code DELETE  /type-depenses/:id} : delete the "id" typeDepense.
      *
-     * @param id the id of the typeDepense to delete.
+     * @param id the id of the typeDepenseDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/type-depenses/{id}")
     public ResponseEntity<Void> deleteTypeDepense(@PathVariable Long id) {
         log.debug("REST request to delete TypeDepense : {}", id);
-        typeDepenseRepository.deleteById(id);
+        typeDepenseService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

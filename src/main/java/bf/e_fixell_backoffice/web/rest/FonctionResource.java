@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.Fonction;
-import bf.e_fixell_backoffice.repository.FonctionRepository;
+import bf.e_fixell_backoffice.service.FonctionService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.FonctionDTO;
+import bf.e_fixell_backoffice.service.dto.FonctionCriteria;
+import bf.e_fixell_backoffice.service.FonctionQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class FonctionResource {
 
     private final Logger log = LoggerFactory.getLogger(FonctionResource.class);
@@ -33,26 +39,29 @@ public class FonctionResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final FonctionRepository fonctionRepository;
+    private final FonctionService fonctionService;
 
-    public FonctionResource(FonctionRepository fonctionRepository) {
-        this.fonctionRepository = fonctionRepository;
+    private final FonctionQueryService fonctionQueryService;
+
+    public FonctionResource(FonctionService fonctionService, FonctionQueryService fonctionQueryService) {
+        this.fonctionService = fonctionService;
+        this.fonctionQueryService = fonctionQueryService;
     }
 
     /**
      * {@code POST  /fonctions} : Create a new fonction.
      *
-     * @param fonction the fonction to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fonction, or with status {@code 400 (Bad Request)} if the fonction has already an ID.
+     * @param fonctionDTO the fonctionDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fonctionDTO, or with status {@code 400 (Bad Request)} if the fonction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/fonctions")
-    public ResponseEntity<Fonction> createFonction(@RequestBody Fonction fonction) throws URISyntaxException {
-        log.debug("REST request to save Fonction : {}", fonction);
-        if (fonction.getId() != null) {
+    public ResponseEntity<FonctionDTO> createFonction(@RequestBody FonctionDTO fonctionDTO) throws URISyntaxException {
+        log.debug("REST request to save Fonction : {}", fonctionDTO);
+        if (fonctionDTO.getId() != null) {
             throw new BadRequestAlertException("A new fonction cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Fonction result = fonctionRepository.save(fonction);
+        FonctionDTO result = fonctionService.save(fonctionDTO);
         return ResponseEntity.created(new URI("/api/fonctions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class FonctionResource {
     /**
      * {@code PUT  /fonctions} : Updates an existing fonction.
      *
-     * @param fonction the fonction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fonction,
-     * or with status {@code 400 (Bad Request)} if the fonction is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the fonction couldn't be updated.
+     * @param fonctionDTO the fonctionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fonctionDTO,
+     * or with status {@code 400 (Bad Request)} if the fonctionDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the fonctionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/fonctions")
-    public ResponseEntity<Fonction> updateFonction(@RequestBody Fonction fonction) throws URISyntaxException {
-        log.debug("REST request to update Fonction : {}", fonction);
-        if (fonction.getId() == null) {
+    public ResponseEntity<FonctionDTO> updateFonction(@RequestBody FonctionDTO fonctionDTO) throws URISyntaxException {
+        log.debug("REST request to update Fonction : {}", fonctionDTO);
+        if (fonctionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Fonction result = fonctionRepository.save(fonction);
+        FonctionDTO result = fonctionService.save(fonctionDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, fonction.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, fonctionDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /fonctions} : get all the fonctions.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of fonctions in body.
      */
     @GetMapping("/fonctions")
-    public List<Fonction> getAllFonctions() {
-        log.debug("REST request to get all Fonctions");
-        return fonctionRepository.findAll();
+    public ResponseEntity<List<FonctionDTO>> getAllFonctions(FonctionCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Fonctions by criteria: {}", criteria);
+        Page<FonctionDTO> page = fonctionQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /fonctions/count} : count all the fonctions.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/fonctions/count")
+    public ResponseEntity<Long> countFonctions(FonctionCriteria criteria) {
+        log.debug("REST request to count Fonctions by criteria: {}", criteria);
+        return ResponseEntity.ok().body(fonctionQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /fonctions/:id} : get the "id" fonction.
      *
-     * @param id the id of the fonction to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the fonction, or with status {@code 404 (Not Found)}.
+     * @param id the id of the fonctionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the fonctionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/fonctions/{id}")
-    public ResponseEntity<Fonction> getFonction(@PathVariable Long id) {
+    public ResponseEntity<FonctionDTO> getFonction(@PathVariable Long id) {
         log.debug("REST request to get Fonction : {}", id);
-        Optional<Fonction> fonction = fonctionRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(fonction);
+        Optional<FonctionDTO> fonctionDTO = fonctionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(fonctionDTO);
     }
 
     /**
      * {@code DELETE  /fonctions/:id} : delete the "id" fonction.
      *
-     * @param id the id of the fonction to delete.
+     * @param id the id of the fonctionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/fonctions/{id}")
     public ResponseEntity<Void> deleteFonction(@PathVariable Long id) {
         log.debug("REST request to delete Fonction : {}", id);
-        fonctionRepository.deleteById(id);
+        fonctionService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

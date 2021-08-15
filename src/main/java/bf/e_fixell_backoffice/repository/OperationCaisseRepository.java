@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface OperationCaisseRepository extends JpaRepository<OperationCaisse, Long> {
+public interface OperationCaisseRepository extends JpaRepository<OperationCaisse, Long>, JpaSpecificationExecutor<OperationCaisse> {
 }

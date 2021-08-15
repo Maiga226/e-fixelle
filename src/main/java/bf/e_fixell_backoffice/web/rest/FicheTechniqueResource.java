@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.FicheTechnique;
-import bf.e_fixell_backoffice.repository.FicheTechniqueRepository;
+import bf.e_fixell_backoffice.service.FicheTechniqueService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.FicheTechniqueDTO;
+import bf.e_fixell_backoffice.service.dto.FicheTechniqueCriteria;
+import bf.e_fixell_backoffice.service.FicheTechniqueQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class FicheTechniqueResource {
 
     private final Logger log = LoggerFactory.getLogger(FicheTechniqueResource.class);
@@ -33,26 +39,29 @@ public class FicheTechniqueResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final FicheTechniqueRepository ficheTechniqueRepository;
+    private final FicheTechniqueService ficheTechniqueService;
 
-    public FicheTechniqueResource(FicheTechniqueRepository ficheTechniqueRepository) {
-        this.ficheTechniqueRepository = ficheTechniqueRepository;
+    private final FicheTechniqueQueryService ficheTechniqueQueryService;
+
+    public FicheTechniqueResource(FicheTechniqueService ficheTechniqueService, FicheTechniqueQueryService ficheTechniqueQueryService) {
+        this.ficheTechniqueService = ficheTechniqueService;
+        this.ficheTechniqueQueryService = ficheTechniqueQueryService;
     }
 
     /**
      * {@code POST  /fiche-techniques} : Create a new ficheTechnique.
      *
-     * @param ficheTechnique the ficheTechnique to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new ficheTechnique, or with status {@code 400 (Bad Request)} if the ficheTechnique has already an ID.
+     * @param ficheTechniqueDTO the ficheTechniqueDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new ficheTechniqueDTO, or with status {@code 400 (Bad Request)} if the ficheTechnique has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/fiche-techniques")
-    public ResponseEntity<FicheTechnique> createFicheTechnique(@RequestBody FicheTechnique ficheTechnique) throws URISyntaxException {
-        log.debug("REST request to save FicheTechnique : {}", ficheTechnique);
-        if (ficheTechnique.getId() != null) {
+    public ResponseEntity<FicheTechniqueDTO> createFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
+        log.debug("REST request to save FicheTechnique : {}", ficheTechniqueDTO);
+        if (ficheTechniqueDTO.getId() != null) {
             throw new BadRequestAlertException("A new ficheTechnique cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        FicheTechnique result = ficheTechniqueRepository.save(ficheTechnique);
+        FicheTechniqueDTO result = ficheTechniqueService.save(ficheTechniqueDTO);
         return ResponseEntity.created(new URI("/api/fiche-techniques/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class FicheTechniqueResource {
     /**
      * {@code PUT  /fiche-techniques} : Updates an existing ficheTechnique.
      *
-     * @param ficheTechnique the ficheTechnique to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated ficheTechnique,
-     * or with status {@code 400 (Bad Request)} if the ficheTechnique is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the ficheTechnique couldn't be updated.
+     * @param ficheTechniqueDTO the ficheTechniqueDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated ficheTechniqueDTO,
+     * or with status {@code 400 (Bad Request)} if the ficheTechniqueDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the ficheTechniqueDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/fiche-techniques")
-    public ResponseEntity<FicheTechnique> updateFicheTechnique(@RequestBody FicheTechnique ficheTechnique) throws URISyntaxException {
-        log.debug("REST request to update FicheTechnique : {}", ficheTechnique);
-        if (ficheTechnique.getId() == null) {
+    public ResponseEntity<FicheTechniqueDTO> updateFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
+        log.debug("REST request to update FicheTechnique : {}", ficheTechniqueDTO);
+        if (ficheTechniqueDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        FicheTechnique result = ficheTechniqueRepository.save(ficheTechnique);
+        FicheTechniqueDTO result = ficheTechniqueService.save(ficheTechniqueDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, ficheTechnique.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, ficheTechniqueDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /fiche-techniques} : get all the ficheTechniques.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ficheTechniques in body.
      */
     @GetMapping("/fiche-techniques")
-    public List<FicheTechnique> getAllFicheTechniques() {
-        log.debug("REST request to get all FicheTechniques");
-        return ficheTechniqueRepository.findAll();
+    public ResponseEntity<List<FicheTechniqueDTO>> getAllFicheTechniques(FicheTechniqueCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get FicheTechniques by criteria: {}", criteria);
+        Page<FicheTechniqueDTO> page = ficheTechniqueQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /fiche-techniques/count} : count all the ficheTechniques.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/fiche-techniques/count")
+    public ResponseEntity<Long> countFicheTechniques(FicheTechniqueCriteria criteria) {
+        log.debug("REST request to count FicheTechniques by criteria: {}", criteria);
+        return ResponseEntity.ok().body(ficheTechniqueQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /fiche-techniques/:id} : get the "id" ficheTechnique.
      *
-     * @param id the id of the ficheTechnique to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the ficheTechnique, or with status {@code 404 (Not Found)}.
+     * @param id the id of the ficheTechniqueDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the ficheTechniqueDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/fiche-techniques/{id}")
-    public ResponseEntity<FicheTechnique> getFicheTechnique(@PathVariable Long id) {
+    public ResponseEntity<FicheTechniqueDTO> getFicheTechnique(@PathVariable Long id) {
         log.debug("REST request to get FicheTechnique : {}", id);
-        Optional<FicheTechnique> ficheTechnique = ficheTechniqueRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(ficheTechnique);
+        Optional<FicheTechniqueDTO> ficheTechniqueDTO = ficheTechniqueService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(ficheTechniqueDTO);
     }
 
     /**
      * {@code DELETE  /fiche-techniques/:id} : delete the "id" ficheTechnique.
      *
-     * @param id the id of the ficheTechnique to delete.
+     * @param id the id of the ficheTechniqueDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/fiche-techniques/{id}")
     public ResponseEntity<Void> deleteFicheTechnique(@PathVariable Long id) {
         log.debug("REST request to delete FicheTechnique : {}", id);
-        ficheTechniqueRepository.deleteById(id);
+        ficheTechniqueService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

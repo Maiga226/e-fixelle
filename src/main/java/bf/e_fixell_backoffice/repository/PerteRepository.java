@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PerteRepository extends JpaRepository<Perte, Long> {
+public interface PerteRepository extends JpaRepository<Perte, Long>, JpaSpecificationExecutor<Perte> {
 }

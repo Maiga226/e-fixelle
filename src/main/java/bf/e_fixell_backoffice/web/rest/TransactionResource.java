@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.Transaction;
-import bf.e_fixell_backoffice.repository.TransactionRepository;
+import bf.e_fixell_backoffice.service.TransactionService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.TransactionDTO;
+import bf.e_fixell_backoffice.service.dto.TransactionCriteria;
+import bf.e_fixell_backoffice.service.TransactionQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class TransactionResource {
 
     private final Logger log = LoggerFactory.getLogger(TransactionResource.class);
@@ -33,26 +39,29 @@ public class TransactionResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
 
-    public TransactionResource(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
+    private final TransactionQueryService transactionQueryService;
+
+    public TransactionResource(TransactionService transactionService, TransactionQueryService transactionQueryService) {
+        this.transactionService = transactionService;
+        this.transactionQueryService = transactionQueryService;
     }
 
     /**
      * {@code POST  /transactions} : Create a new transaction.
      *
-     * @param transaction the transaction to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new transaction, or with status {@code 400 (Bad Request)} if the transaction has already an ID.
+     * @param transactionDTO the transactionDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new transactionDTO, or with status {@code 400 (Bad Request)} if the transaction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/transactions")
-    public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
-        log.debug("REST request to save Transaction : {}", transaction);
-        if (transaction.getId() != null) {
+    public ResponseEntity<TransactionDTO> createTransaction(@RequestBody TransactionDTO transactionDTO) throws URISyntaxException {
+        log.debug("REST request to save Transaction : {}", transactionDTO);
+        if (transactionDTO.getId() != null) {
             throw new BadRequestAlertException("A new transaction cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Transaction result = transactionRepository.save(transaction);
+        TransactionDTO result = transactionService.save(transactionDTO);
         return ResponseEntity.created(new URI("/api/transactions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class TransactionResource {
     /**
      * {@code PUT  /transactions} : Updates an existing transaction.
      *
-     * @param transaction the transaction to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transaction,
-     * or with status {@code 400 (Bad Request)} if the transaction is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the transaction couldn't be updated.
+     * @param transactionDTO the transactionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated transactionDTO,
+     * or with status {@code 400 (Bad Request)} if the transactionDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the transactionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/transactions")
-    public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) throws URISyntaxException {
-        log.debug("REST request to update Transaction : {}", transaction);
-        if (transaction.getId() == null) {
+    public ResponseEntity<TransactionDTO> updateTransaction(@RequestBody TransactionDTO transactionDTO) throws URISyntaxException {
+        log.debug("REST request to update Transaction : {}", transactionDTO);
+        if (transactionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Transaction result = transactionRepository.save(transaction);
+        TransactionDTO result = transactionService.save(transactionDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, transaction.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, transactionDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /transactions} : get all the transactions.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of transactions in body.
      */
     @GetMapping("/transactions")
-    public List<Transaction> getAllTransactions() {
-        log.debug("REST request to get all Transactions");
-        return transactionRepository.findAll();
+    public ResponseEntity<List<TransactionDTO>> getAllTransactions(TransactionCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Transactions by criteria: {}", criteria);
+        Page<TransactionDTO> page = transactionQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /transactions/count} : count all the transactions.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/transactions/count")
+    public ResponseEntity<Long> countTransactions(TransactionCriteria criteria) {
+        log.debug("REST request to count Transactions by criteria: {}", criteria);
+        return ResponseEntity.ok().body(transactionQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /transactions/:id} : get the "id" transaction.
      *
-     * @param id the id of the transaction to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the transaction, or with status {@code 404 (Not Found)}.
+     * @param id the id of the transactionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the transactionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/transactions/{id}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable Long id) {
+    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long id) {
         log.debug("REST request to get Transaction : {}", id);
-        Optional<Transaction> transaction = transactionRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(transaction);
+        Optional<TransactionDTO> transactionDTO = transactionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(transactionDTO);
     }
 
     /**
      * {@code DELETE  /transactions/:id} : delete the "id" transaction.
      *
-     * @param id the id of the transaction to delete.
+     * @param id the id of the transactionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/transactions/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         log.debug("REST request to delete Transaction : {}", id);
-        transactionRepository.deleteById(id);
+        transactionService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

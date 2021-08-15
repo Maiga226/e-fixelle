@@ -1,16 +1,23 @@
 package bf.e_fixell_backoffice.web.rest;
 
-import bf.e_fixell_backoffice.domain.Depense;
-import bf.e_fixell_backoffice.repository.DepenseRepository;
+import bf.e_fixell_backoffice.service.DepenseService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
+import bf.e_fixell_backoffice.service.dto.DepenseDTO;
+import bf.e_fixell_backoffice.service.dto.DepenseCriteria;
+import bf.e_fixell_backoffice.service.DepenseQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +30,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class DepenseResource {
 
     private final Logger log = LoggerFactory.getLogger(DepenseResource.class);
@@ -33,26 +39,29 @@ public class DepenseResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final DepenseRepository depenseRepository;
+    private final DepenseService depenseService;
 
-    public DepenseResource(DepenseRepository depenseRepository) {
-        this.depenseRepository = depenseRepository;
+    private final DepenseQueryService depenseQueryService;
+
+    public DepenseResource(DepenseService depenseService, DepenseQueryService depenseQueryService) {
+        this.depenseService = depenseService;
+        this.depenseQueryService = depenseQueryService;
     }
 
     /**
      * {@code POST  /depenses} : Create a new depense.
      *
-     * @param depense the depense to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new depense, or with status {@code 400 (Bad Request)} if the depense has already an ID.
+     * @param depenseDTO the depenseDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new depenseDTO, or with status {@code 400 (Bad Request)} if the depense has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/depenses")
-    public ResponseEntity<Depense> createDepense(@RequestBody Depense depense) throws URISyntaxException {
-        log.debug("REST request to save Depense : {}", depense);
-        if (depense.getId() != null) {
+    public ResponseEntity<DepenseDTO> createDepense(@RequestBody DepenseDTO depenseDTO) throws URISyntaxException {
+        log.debug("REST request to save Depense : {}", depenseDTO);
+        if (depenseDTO.getId() != null) {
             throw new BadRequestAlertException("A new depense cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Depense result = depenseRepository.save(depense);
+        DepenseDTO result = depenseService.save(depenseDTO);
         return ResponseEntity.created(new URI("/api/depenses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -61,58 +70,74 @@ public class DepenseResource {
     /**
      * {@code PUT  /depenses} : Updates an existing depense.
      *
-     * @param depense the depense to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated depense,
-     * or with status {@code 400 (Bad Request)} if the depense is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the depense couldn't be updated.
+     * @param depenseDTO the depenseDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated depenseDTO,
+     * or with status {@code 400 (Bad Request)} if the depenseDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the depenseDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/depenses")
-    public ResponseEntity<Depense> updateDepense(@RequestBody Depense depense) throws URISyntaxException {
-        log.debug("REST request to update Depense : {}", depense);
-        if (depense.getId() == null) {
+    public ResponseEntity<DepenseDTO> updateDepense(@RequestBody DepenseDTO depenseDTO) throws URISyntaxException {
+        log.debug("REST request to update Depense : {}", depenseDTO);
+        if (depenseDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Depense result = depenseRepository.save(depense);
+        DepenseDTO result = depenseService.save(depenseDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, depense.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, depenseDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code GET  /depenses} : get all the depenses.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of depenses in body.
      */
     @GetMapping("/depenses")
-    public List<Depense> getAllDepenses() {
-        log.debug("REST request to get all Depenses");
-        return depenseRepository.findAll();
+    public ResponseEntity<List<DepenseDTO>> getAllDepenses(DepenseCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Depenses by criteria: {}", criteria);
+        Page<DepenseDTO> page = depenseQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /depenses/count} : count all the depenses.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/depenses/count")
+    public ResponseEntity<Long> countDepenses(DepenseCriteria criteria) {
+        log.debug("REST request to count Depenses by criteria: {}", criteria);
+        return ResponseEntity.ok().body(depenseQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /depenses/:id} : get the "id" depense.
      *
-     * @param id the id of the depense to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the depense, or with status {@code 404 (Not Found)}.
+     * @param id the id of the depenseDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the depenseDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/depenses/{id}")
-    public ResponseEntity<Depense> getDepense(@PathVariable Long id) {
+    public ResponseEntity<DepenseDTO> getDepense(@PathVariable Long id) {
         log.debug("REST request to get Depense : {}", id);
-        Optional<Depense> depense = depenseRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(depense);
+        Optional<DepenseDTO> depenseDTO = depenseService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(depenseDTO);
     }
 
     /**
      * {@code DELETE  /depenses/:id} : delete the "id" depense.
      *
-     * @param id the id of the depense to delete.
+     * @param id the id of the depenseDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/depenses/{id}")
     public ResponseEntity<Void> deleteDepense(@PathVariable Long id) {
         log.debug("REST request to delete Depense : {}", id);
-        depenseRepository.deleteById(id);
+        depenseService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

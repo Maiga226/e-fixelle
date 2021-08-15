@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface SessionCaisseRepository extends JpaRepository<SessionCaisse, Long> {
+public interface SessionCaisseRepository extends JpaRepository<SessionCaisse, Long>, JpaSpecificationExecutor<SessionCaisse> {
 }

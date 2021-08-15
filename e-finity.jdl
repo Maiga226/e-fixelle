@@ -115,7 +115,7 @@ entity Depense {
 	libelle String,
 	description String,
     montant BigDecimal
-} 
+}
 
 entity TypeDepense {
 	code String,
@@ -174,7 +174,7 @@ entity TypeFrais {
 }
 
 entity Classification {
-//produit dangereux, standard 
+//produit dangereux, standard
     libelle String
 }
 
@@ -239,65 +239,68 @@ enum TypeTransport {
 }
 relationship OneToOne {
 	Transaction{ficheTechnique} to FicheTechnique
-    
+
     // A gerer manuellement
 	// User{personnel} to Personnel
-    
+
 }
 
 relationship OneToMany {
 	Produit to PrixProduit{produit}
     Produit to Perte{produit}
-    Produit to Transaction{produit} 
-    
+    Produit to Transaction{produit}
+
     Categorie to Produit{categorie}
-    
+
     Commande to Transaction{commande}
     Commande to Livraison{commande}
     Commande to Paiement{commande}
     Commande to Frais{commande}
-    
-    
+
+
     Fournisseur to Commande{fournisseur}
     Fournisseur to Approvisionnement{fournisseur}
     Fournisseur to Livraison{fournisseur}
-    
+
     UniteOrganisation to Fournisseur{adresse}
-    
+
     Client to Commande{client}
     Client to Vente{client}
-    
-    
+
+
     Approvisionnement to Transaction{approvisionnement}
-    
-	Livraison to Transaction{livraison}   
-    
+
+	Livraison to Transaction{livraison}
+
     Vente to Transaction{vente}
     Vente to Paiement{vente}
-    
+
     Personnel to HistoriqueAffectation{personnel}
-    
+
     Fonction to HistoriqueAffectation{fonction}
-    
+
     Caisse to SessionCaisse{caisse}
     Caisse to OperationCaisse{caisseSrc}
     Caisse to OperationCaisse{caisseDst}
     SessionCaisse to Paiement{sessioncaisse}
-    
+
     TypeDepense to Depense{typeDepense}
     SessionCaisse to Depense{sessionCaisse}
-  
+
   // A gerer manuellement
   //  Profil to User{profile}
    // User to SessionCaisse{user}
-    
+
     Classification to Produit{classification}
     FicheTechnique to Caracteristique{ficheTechnique}
-    TypeFrais to Frais{typeFrais} 
+    TypeFrais to Frais{typeFrais}
     SocieteTransport to Transport{societeTransport}
     Transport to Livraison{transport}
     Livraison to Frais{livraison}
 }
 
 
-
+service * with serviceClass
+dto * with mapstruct
+paginate * with pagination
+filter *

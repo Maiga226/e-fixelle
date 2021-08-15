@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface HistoriqueAffectationRepository extends JpaRepository<HistoriqueAffectation, Long> {
+public interface HistoriqueAffectationRepository extends JpaRepository<HistoriqueAffectation, Long>, JpaSpecificationExecutor<HistoriqueAffectation> {
 }

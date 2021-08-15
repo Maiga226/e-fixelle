@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ApprovisionnementRepository extends JpaRepository<Approvisionnement, Long> {
+public interface ApprovisionnementRepository extends JpaRepository<Approvisionnement, Long>, JpaSpecificationExecutor<Approvisionnement> {
 }

@@ -62,6 +62,5 @@
     <include file="config/liquibase/changelog/20210814222322_added_entity_constraints_Caracteristique.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210814222422_added_entity_constraints_OperationCaisse.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
-    <include file="config/liquibase/changelog/user_update.xml" relativeToChangelogFile="false"/>
-
+<!--    <include file="config/liquibase/changelog/user_update.xml" relativeToChangelogFile="false"/>-->
 </databaseChangeLog>

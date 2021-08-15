@@ -37,9 +37,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/e-fixelle
-    username: postgres
-    password: Abdoul
+    url: jdbc:postgresql://localhost:5432/e-fixell_backoffice
+    username: e_fixell_backoffice
+    password:
     hikari:
       poolName: Hikari
       auto-commit: false

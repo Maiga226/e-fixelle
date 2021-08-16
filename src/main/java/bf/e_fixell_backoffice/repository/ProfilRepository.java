@@ -11,4 +11,8 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface ProfilRepository extends JpaRepository<Profil, Long>, JpaSpecificationExecutor<Profil> {
+    @Query("select p from  Profil p where p.id=:id")
+    public Profil findOne(@Param("id") Long id);
+
+    Profil findByNomProfil(String nomProfil);
 }

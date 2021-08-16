@@ -3,7 +3,8 @@ package bf.e_fixell_backoffice.service.mapper;
 import bf.e_fixell_backoffice.domain.Authority;
 import bf.e_fixell_backoffice.domain.User;
 import bf.e_fixell_backoffice.service.dto.UserDTO;
-
+import bf.e_fixell_backoffice.repository.ProfilRepository;
+import bf.e_fixell_backoffice.repository.AuthorityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,6 +18,13 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserMapper {
+    private final ProfilRepository profilRepository;
+    private final AuthorityRepository authorityRepository;
+
+    public UserMapper(ProfilRepository profilRepository,AuthorityRepository authorityRepository){
+            this.profilRepository=profilRepository;
+            this.authorityRepository=authorityRepository;
+    }
 
     public List<UserDTO> usersToUserDTOs(List<User> users) {
         return users.stream()
@@ -49,8 +57,15 @@ public class UserMapper {
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
             user.setLangKey(userDTO.getLangKey());
-            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
-            user.setAuthorities(authorities);
+            user.setProfil(profilRepository.findOne(userDTO.getProfilId()));
+            if(userDTO.getProfilId()!=null) {
+                Set<Authority> profilAuthorities=profilRepository.findOne(userDTO.getProfilId()).getAuthorities();
+                Set<Authority> authorities=new HashSet<>();
+                profilAuthorities.forEach(item->{
+                    authorities.add(authorityRepository.getOne(item.getName()));
+                });
+                user.setAuthorities(authorities);
+            }
             return user;
         }
     }

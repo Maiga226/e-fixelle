@@ -3,8 +3,10 @@ package bf.e_fixell_backoffice.service;
 import bf.e_fixell_backoffice.config.Constants;
 import bf.e_fixell_backoffice.domain.Authority;
 import bf.e_fixell_backoffice.domain.User;
+import bf.e_fixell_backoffice.domain.Profil;
 import bf.e_fixell_backoffice.repository.AuthorityRepository;
 import bf.e_fixell_backoffice.repository.UserRepository;
+import bf.e_fixell_backoffice.repository.ProfilRepository;
 import bf.e_fixell_backoffice.security.AuthoritiesConstants;
 import bf.e_fixell_backoffice.security.SecurityUtils;
 import bf.e_fixell_backoffice.service.dto.UserDTO;
@@ -41,12 +43,15 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
+    private final ProfilRepository profilRepository;
+
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository,ProfilRepository profilRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.profilRepository=profilRepository;
         this.cacheManager = cacheManager;
     }
 
@@ -154,14 +159,23 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO.getAuthorities().stream()
-                .map(authorityRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-            user.setAuthorities(authorities);
+        Set<Authority> authorities = new HashSet<>();
+        if(userDTO.getProfilId()!=null) {
+            Set<Authority> profilAuthorities=profilRepository.findOne(userDTO.getProfilId()).getAuthorities();
+            if (profilAuthorities!=null) {
+                profilAuthorities.forEach(item->{
+                    authorities.add(authorityRepository.getOne(item.getName()));
+                });
+            }
+            user.setProfil(profilRepository.getOne(userDTO.getProfilId()));
+        } else {
+            Profil profil= new Profil();
+            profil= profilRepository.findByNomProfil("Invite");
+            if(profil!=null) {
+                user.setProfil(profil);
+            }
         }
+        user.setAuthorities(authorities);
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
@@ -215,14 +229,18 @@ public class UserService {
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
-                Set<Authority> managedAuthorities = user.getAuthorities();
-                managedAuthorities.clear();
-                userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(managedAuthorities::add);
-                this.clearUserCaches(user);
+                Set<Authority> authorities = new HashSet<>();
+                if(userDTO.getProfilId()!=null) {
+                    Set<Authority> profilAuthorities=profilRepository.findOne(userDTO.getProfilId()).getAuthorities();
+                    if (profilAuthorities!=null) {
+                        profilAuthorities.forEach(item->{
+                            authorities.add(authorityRepository.getOne(item.getName()));
+                        });
+                    }
+                    user.setProfil(profilRepository.getOne(userDTO.getProfilId()));
+                }
+                user.setAuthorities(authorities);
+
                 log.debug("Changed Information for User: {}", user);
                 return user;
             })

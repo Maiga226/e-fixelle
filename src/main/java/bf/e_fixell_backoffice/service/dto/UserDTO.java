@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A DTO representing a user, with his authorities.
+ * A DTO representing a user, with his authoritiees.
  */
 public class UserDTO {
 
@@ -52,7 +52,7 @@ public class UserDTO {
 
     private Long profilId;
 
-    private String profileNom;
+    private String profileLibelle;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -76,7 +76,7 @@ public class UserDTO {
             .collect(Collectors.toSet());
         if(user.getProfil()!=null){
             this.profilId=user.getProfil().getId();
-            this.profileNom=user.getProfil().getNomProfil();
+            this.profileLibelle=user.getProfil().getLibelle();
         }
     }
 
@@ -193,11 +193,11 @@ public class UserDTO {
     }
 
     public String getProfileNom() {
-        return profileNom;
+        return profileLibelle;
     }
 
-    public void setProfileNom(String profileNom) {
-        this.profileNom = profileNom;
+    public void setProfileNom(String profileLibelle) {
+        this.profileLibelle = profileLibelle;
     }
 
     @Override

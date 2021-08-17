@@ -1,19 +1,22 @@
 package bf.e_fixell_backoffice.service.dto;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * A DTO for the {@link bf.e_fixell_backoffice.domain.Profil} entity.
  */
 public class ProfilDTO implements Serializable {
-    
+
     private Long id;
 
     private String libelle;
 
     private String description;
 
-    
+    private Set<String> roles;
+
+
     public Long getId() {
         return id;
     }
@@ -36,6 +39,14 @@ public class ProfilDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     @Override

@@ -1,6 +1,10 @@
 package bf.e_fixell_backoffice.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 
 import java.io.Serializable;

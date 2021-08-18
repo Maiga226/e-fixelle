@@ -54,6 +54,8 @@ public class UserDTO {
 
     private String profileNom;
 
+    private boolean randomPassword;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -71,13 +73,22 @@ public class UserDTO {
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
+        this.randomPassword = user.getRandomPassword();
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
         if(user.getProfil()!=null){
             this.profilId=user.getProfil().getId();
-            this.profileNom=user.getProfil().getNomProfil();
+            this.profileNom=user.getProfil().getLibelle();
         }
+    }
+
+    public boolean getRandomPassword() {
+        return randomPassword;
+    }
+
+    public void setRandomPassword(boolean randomPassword) {
+        this.randomPassword = randomPassword;
     }
 
     public Long getId() {
@@ -203,18 +214,22 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
+            "id=" + id +
+            ", login='" + login + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
+            ", createdBy='" + createdBy + '\'' +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
-            "}";
+            ", profilId=" + profilId +
+            ", profileNom='" + profileNom + '\'' +
+            ", randomPassword=" + randomPassword +
+            '}';
     }
 }

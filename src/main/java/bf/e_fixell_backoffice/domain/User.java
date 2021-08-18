@@ -82,6 +82,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "random_password")
+    private boolean randomPassword;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -97,6 +100,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     private Profil profil;
+
+    public boolean getRandomPassword() {
+        return randomPassword;
+    }
+
+    public void setRandomPassword(boolean randomPassword) {
+        this.randomPassword = randomPassword;
+    }
 
     public Long getId() {
         return id;
@@ -238,14 +249,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-            "login='" + login + '\'' +
+            "id=" + id +
+            ", login='" + login + '\'' +
+            ", password='" + password + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
+            ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
+            ", imageUrl='" + imageUrl + '\'' +
             ", activationKey='" + activationKey + '\'' +
-            "}";
+            ", resetKey='" + resetKey + '\'' +
+            ", resetDate=" + resetDate +
+            ", randomPassword=" + randomPassword +
+            ", authorities=" + authorities +
+            ", personnel=" + personnel +
+            ", profil=" + profil +
+            '}';
     }
 }

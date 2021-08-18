@@ -16,6 +16,15 @@ public class ProfilDTO implements Serializable {
 
     private Set<String> roles;
 
+    private boolean deleted;
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getId() {
         return id;

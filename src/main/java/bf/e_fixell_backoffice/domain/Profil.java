@@ -32,6 +32,9 @@ public class Profil implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -44,6 +47,15 @@ public class Profil implements Serializable {
 
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }
@@ -103,13 +115,14 @@ public class Profil implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Profil{" +
-            "id=" + getId() +
-            ", libelle='" + getLibelle() + "'" +
-            ", description='" + getDescription() + "'" +
-            "}";
+            "id=" + id +
+            ", libelle='" + libelle + '\'' +
+            ", description='" + description + '\'' +
+            ", deleted=" + deleted +
+            ", authorities=" + authorities +
+            '}';
     }
 }

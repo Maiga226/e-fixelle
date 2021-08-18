@@ -97,7 +97,7 @@ public class ProfilResource {
      */
     @GetMapping("/profils")
     public List<ProfilDTO> getAllProfils(ProfilCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Profils by criteria: {}", criteria);
+        log.debug("REST request to get Profils by criteria: {}", criteria.copy());
         return profilQueryService.findByCriteria(criteria, pageable);
         /*Page<ProfilDTO> page = profilQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

@@ -32,6 +32,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
+
 /**
  * REST controller for managing users.
  * <p>
@@ -201,6 +203,8 @@ public class UserResource {
     public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
         log.debug("REST request to delete User: {}", id);
         userService.deleteUserById(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + id, String.valueOf(id))).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+
+        // return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, false, ENTITY_NAME, String.valueOf(id))).build();
     }
 }

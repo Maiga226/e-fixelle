@@ -56,6 +56,7 @@ public class ProfilService {
     public ProfilDTO save(ProfilDTO profilDTO) {
         log.debug("Request to save Profil : {}", profilDTO);
         Profil profil = profilMapper.toEntity(profilDTO);
+        profil.setDeleted(false);
         profil.setAuthorities(authoritiesFromStrings(profilDTO.getRoles()));
         System.out.println("PROFIL "+profil);
         profil = profilRepository.save(profil);

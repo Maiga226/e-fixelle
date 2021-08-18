@@ -154,11 +154,13 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+       // String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String encryptedPassword = passwordEncoder.encode("efixell");
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        user.setRandomPassword(true);
         Set<Authority> authorities = new HashSet<>();
         if(userDTO.getProfilId()!=null) {
             Set<Authority> profilAuthorities=profilRepository.findOne(userDTO.getProfilId()).getAuthorities();
@@ -170,7 +172,7 @@ public class UserService {
             user.setProfil(profilRepository.getOne(userDTO.getProfilId()));
         } else {
             Profil profil= new Profil();
-            profil= profilRepository.findByNomProfil("Invite");
+            profil= profilRepository.findByLibelle("Invite");
             if(profil!=null) {
                 user.setProfil(profil);
             }
@@ -223,6 +225,7 @@ public class UserService {
                 user.setLogin(userDTO.getLogin().toLowerCase());
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
+                user.setRandomPassword(userDTO.getRandomPassword());
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
@@ -271,8 +274,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    public Page<UserDTO> getAllManagedUsers(Pageable pageable,UserDTO userDTO) {
+        return userRepository.findUserWithCriteria(pageable,userDTO.getFirstName(),userDTO.getLastName(),userDTO.getLogin(),userDTO.getEmail(),userDTO.getProfilId()).map(UserDTO::new);
+        // return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,7 @@ package bf.e_fixell_backoffice.repository;
 import bf.e_fixell_backoffice.domain.Profil;
 
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfilRepository extends JpaRepository<Profil, Long>, JpaSpecificationExecutor<Profil> {
     @Query("select p from  Profil p where p.id=:id")
-    public Profil findOne(@Param("id") Long id);
+     Profil findOne(@Param("id") Long id);
 
-    Profil findByNomProfil(String nomProfil);
+    Profil findByLibelle(String libelle);
 }

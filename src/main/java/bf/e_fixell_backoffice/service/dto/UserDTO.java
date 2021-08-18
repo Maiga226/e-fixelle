@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A DTO representing a user, with his authoritiees.
+ * A DTO representing a user, with his authorities.
  */
 public class UserDTO {
 
@@ -52,7 +52,9 @@ public class UserDTO {
 
     private Long profilId;
 
-    private String profileLibelle;
+    private String profileNom;
+
+    private boolean randomPassword;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -71,13 +73,22 @@ public class UserDTO {
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
+        this.randomPassword = user.getRandomPassword();
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
         if(user.getProfil()!=null){
             this.profilId=user.getProfil().getId();
-            this.profileLibelle=user.getProfil().getLibelle();
+            this.profileNom=user.getProfil().getLibelle();
         }
+    }
+
+    public boolean getRandomPassword() {
+        return randomPassword;
+    }
+
+    public void setRandomPassword(boolean randomPassword) {
+        this.randomPassword = randomPassword;
     }
 
     public Long getId() {
@@ -193,28 +204,32 @@ public class UserDTO {
     }
 
     public String getProfileNom() {
-        return profileLibelle;
+        return profileNom;
     }
 
-    public void setProfileNom(String profileLibelle) {
-        this.profileLibelle = profileLibelle;
+    public void setProfileNom(String profileNom) {
+        this.profileNom = profileNom;
     }
 
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
+            "id=" + id +
+            ", login='" + login + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
+            ", createdBy='" + createdBy + '\'' +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
-            "}";
+            ", profilId=" + profilId +
+            ", profileNom='" + profileNom + '\'' +
+            ", randomPassword=" + randomPassword +
+            '}';
     }
 }

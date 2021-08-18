@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByLogin(String login);
 
+    Optional<User> findById(Long id);
+
 
 
     @EntityGraph(attributePaths = "authorities")
@@ -57,6 +60,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         "and (:login is null or :login=''  or LOWER(user.login) like LOWER('%'||:login||'%'))" +
         "and (:email is null or :email='' or UPPER(user.email) like UPPER('%'||:email||'%' ))" +
         "and (:profilId is null  or user.profil.id=:profilId)" +
+        "and (user.deleted=false)" +
         ")")
     Page<User> findUserWithCriteria(
         Pageable pageable,
@@ -67,4 +71,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
         @Param(value = "profilId") Long profilId
     );
     List<User> findAllByProfilId(Long id);
+
+    @Modifying
+    @Query("UPDATE User user SET  user.deleted= true, user.activated =false where user.id=:id")
+    void deleteById(@Param("id") Long id);
 }

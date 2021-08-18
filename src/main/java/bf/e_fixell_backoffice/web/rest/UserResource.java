@@ -194,4 +194,13 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + login, login)).build();
     }
+
+
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        log.debug("REST request to delete User: {}", id);
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + id, String.valueOf(id))).build();
+    }
 }

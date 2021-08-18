@@ -142,6 +142,7 @@ public class UserService {
 
     public User createUser(UserDTO userDTO) {
         User user = new User();
+        String encryptedPassword;
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -155,12 +156,17 @@ public class UserService {
             user.setLangKey(userDTO.getLangKey());
         }
        // String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        String encryptedPassword = passwordEncoder.encode("efixell");
+        if (userDTO.getPassword()!=null && userDTO.getPassword().trim()!=null && !userDTO.getPassword().trim().equals("")){
+            encryptedPassword =passwordEncoder.encode(userDTO.getPassword().trim());
+        }else {
+          encryptedPassword = passwordEncoder.encode("efixell");
+        }
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
         user.setRandomPassword(true);
+        user.setDeleted(false);
         Set<Authority> authorities = new HashSet<>();
         if(userDTO.getProfilId()!=null) {
             Set<Authority> profilAuthorities=profilRepository.findOne(userDTO.getProfilId()).getAuthorities();
@@ -226,6 +232,7 @@ public class UserService {
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
                 user.setRandomPassword(userDTO.getRandomPassword());
+                user.setDeleted(userDTO.getDeleted());
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
@@ -253,6 +260,14 @@ public class UserService {
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             userRepository.delete(user);
+            this.clearUserCaches(user);
+            log.debug("Deleted User: {}", user);
+        });
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.findById(id).ifPresent(user -> {
+            userRepository.deleteById(id);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
         });

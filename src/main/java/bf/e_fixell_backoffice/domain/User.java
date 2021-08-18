@@ -85,6 +85,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "random_password")
     private boolean randomPassword;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -103,6 +106,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public boolean getRandomPassword() {
         return randomPassword;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void setRandomPassword(boolean randomPassword) {

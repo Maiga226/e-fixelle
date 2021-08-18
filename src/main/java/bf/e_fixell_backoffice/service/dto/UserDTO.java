@@ -55,6 +55,9 @@ public class UserDTO {
     private String profileNom;
 
     private boolean randomPassword;
+    private boolean deleted;
+
+    private String password;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -73,6 +76,7 @@ public class UserDTO {
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
+       this.deleted = user.getDeleted();
         this.randomPassword = user.getRandomPassword();
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
@@ -83,12 +87,28 @@ public class UserDTO {
         }
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public boolean getRandomPassword() {
         return randomPassword;
     }
 
     public void setRandomPassword(boolean randomPassword) {
         this.randomPassword = randomPassword;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
@@ -230,6 +250,8 @@ public class UserDTO {
             ", profilId=" + profilId +
             ", profileNom='" + profileNom + '\'' +
             ", randomPassword=" + randomPassword +
+            ", deleted=" + deleted +
+            ", password='" + password + '\'' +
             '}';
     }
 }

@@ -66,4 +66,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
         @Param(value = "email") String email,
         @Param(value = "profilId") Long profilId
     );
+    List<User> findAllByProfilId(Long id);
 }

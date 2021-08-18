@@ -150,7 +150,8 @@ public class UserResource {
     }*/
 
     @PostMapping("/users/criteria")
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable,UserDTO userDTO) {
+    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable,@RequestBody UserDTO userDTO) {
+        log.info("--------- USER -------"+userDTO.toString());
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable,userDTO);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

@@ -1,6 +1,7 @@
 package bf.e_fixell_backoffice.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -61,11 +62,18 @@ public class ProfilQueryService extends QueryService<Profil> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<ProfilDTO> findByCriteria(ProfilCriteria criteria, Pageable page) {
+    public List<ProfilDTO> findByCriteria(ProfilCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Profil> specification = createSpecification(criteria);
         return profilRepository.findAll(specification, page)
-            .map(profilMapper::toDto);
+            .map(profil -> {
+                ProfilDTO profilDTO= profilMapper.toDto(profil);
+                profilDTO.setRoles(profil.getAuthorities()
+                    .stream().map(Authority::getName)
+                    .collect(Collectors.toSet()));
+                return profilDTO;
+            }).getContent();
+            /*.map(profilMapper::toDto);*/
     }
 
     /**

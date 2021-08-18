@@ -96,11 +96,12 @@ public class ProfilResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profils in body.
      */
     @GetMapping("/profils")
-    public ResponseEntity<List<ProfilDTO>> getAllProfils(ProfilCriteria criteria, Pageable pageable) {
+    public List<ProfilDTO> getAllProfils(ProfilCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Profils by criteria: {}", criteria);
-        Page<ProfilDTO> page = profilQueryService.findByCriteria(criteria, pageable);
+        return profilQueryService.findByCriteria(criteria, pageable);
+        /*Page<ProfilDTO> page = profilQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());*/
     }
 
     /**

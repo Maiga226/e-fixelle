@@ -55,8 +55,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByLoginNot(Pageable pageable, String login);
 
     @Query("select user from User user  where(" +
-        "(:nom is null or :nom='' or UPPER(user.firstName) like upper('%'||:nom||'%'))" +
-        "and (:prenom is null or :prenom='' or UPPER(user.lastName) like upper('%'||:prenom||'%') )" +
+        "(:nom is null or :nom='' or UPPER(user.lastName) like upper('%'||:nom||'%'))" +
+        "and (:prenom is null or :prenom='' or UPPER(user.firstName) like upper('%'||:prenom||'%') )" +
         "and (:login is null or :login=''  or LOWER(user.login) like LOWER('%'||:login||'%'))" +
         "and (:email is null or :email='' or UPPER(user.email) like UPPER('%'||:email||'%' ))" +
         "and (:profilId is null  or user.profil.id=:profilId)" +

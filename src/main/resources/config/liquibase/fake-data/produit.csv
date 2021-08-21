@@ -1,11 +1,11 @@
-id;code;libelle;quantite;hs_code
-1;conglomeration Marketing solutions;Health Future Grocery;76924;connecting
-2;Accountability XSS Iowa;Avon Tasty Cotton Bacon;45322;auxiliary Myanmar District
-3;GB Soap Enterprise-wide;morph;37634;calculate sexy
-4;Credit Card Account;Accounts;17906;Jewelery navigate
-5;back up;Sleek Fresh Cheese Facilitator;64198;Practical
-6;Gloves transitional;Money Market Account sensor;82739;hack SMTP
-7;array Beauty;Ball Chair Handmade;5889;Field
-8;Corporate Implementation;24/365 metrics;61022;Estates
-9;Bedfordshire Graphical User Interface;transmitting;48148;Outdoors mission-critical Avon
-10;Keyboard platforms Liaison;Incredible Steel Bike;59094;Incredible Granite Gloves
+id;code;libelle;quantite;hs_code;deleted
+1;conglomeration Marketing solutions;Health Future Grocery;76924;connecting;false
+2;Accountability XSS Iowa;Avon Tasty Cotton Bacon;45322;auxiliary Myanmar District;false
+3;GB Soap Enterprise-wide;morph;37634;calculate sexy;false
+4;Credit Card Account;Accounts;17906;Jewelery navigate;false
+5;back up;Sleek Fresh Cheese Facilitator;64198;Practical;false
+6;Gloves transitional;Money Market Account sensor;82739;hack SMTP;false
+7;array Beauty;Ball Chair Handmade;5889;Field;false
+8;Corporate Implementation;24/365 metrics;61022;Estates;false
+9;Bedfordshire Graphical User Interface;transmitting;48148;Outdoors mission-critical Avon;false
+10;Keyboard platforms Liaison;Incredible Steel Bike;59094;Incredible Granite Gloves;false

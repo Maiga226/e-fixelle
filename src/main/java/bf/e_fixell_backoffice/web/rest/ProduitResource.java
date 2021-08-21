@@ -96,11 +96,12 @@ public class ProduitResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of produits in body.
      */
     @GetMapping("/produits")
-    public ResponseEntity<List<ProduitDTO>> getAllProduits(ProduitCriteria criteria, Pageable pageable) {
+    public List<ProduitDTO> getAllProduits(ProduitCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Produits by criteria: {}", criteria);
-        Page<ProduitDTO> page = produitQueryService.findByCriteria(criteria, pageable);
+        return produitService.findAll();
+        /*Page<ProduitDTO> page = produitQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());*/
     }
 
     /**
@@ -137,7 +138,15 @@ public class ProduitResource {
     @DeleteMapping("/produits/{id}")
     public ResponseEntity<Void> deleteProduit(@PathVariable Long id) {
         log.debug("REST request to delete Produit : {}", id);
-        produitService.delete(id);
+       // produitService.delete(id);
+        produitService.deleteProduitById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+    }
+
+    @PostMapping("/produits/criteria")
+    public ResponseEntity<List<ProduitDTO>> getAllClient(Pageable pageable,@RequestBody ProduitDTO produitDTO) {
+        final Page<ProduitDTO> page = produitService.findWithCriteria(pageable,produitDTO);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 }

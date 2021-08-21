@@ -1,12 +1,15 @@
 package bf.e_fixell_backoffice.service.dto;
 
+import bf.e_fixell_backoffice.domain.Produit;
+
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * A DTO for the {@link bf.e_fixell_backoffice.domain.Produit} entity.
  */
 public class ProduitDTO implements Serializable {
-    
+
     private Long id;
 
     private String code;
@@ -21,7 +24,79 @@ public class ProduitDTO implements Serializable {
     private Long categorieId;
 
     private Long classificationId;
-    
+
+    private String createdBy;
+
+    private Instant createdDate;
+
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate;
+
+    private boolean deleted;
+
+    public ProduitDTO() {
+    }
+
+    public ProduitDTO(Produit produit) {
+        this.id = produit.getId();
+        this.code = produit.getCode();
+        this.libelle = produit.getLibelle();
+        this.quantite = produit.getQuantite();
+        this.hsCode = produit.getHsCode();
+        if (produit.getCategorie()!=null){
+            this.categorieId = produit.getCategorie().getId();
+        }
+        if (produit.getClassification()!=null){
+            this.classificationId = produit.getClassification().getId();
+        }
+        this.createdBy = produit.getCreatedBy();
+        this.createdDate = produit.getCreatedDate();
+        this.lastModifiedBy = produit.getLastModifiedBy();
+        this.lastModifiedDate = produit.getLastModifiedDate();
+        this.deleted = produit.getDeleted();
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }

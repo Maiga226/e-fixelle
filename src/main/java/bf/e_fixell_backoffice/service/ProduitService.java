@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Produit}.
@@ -52,10 +54,10 @@ public class ProduitService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<ProduitDTO> findAll(Pageable pageable) {
+    public List<ProduitDTO> findAll() {
         log.debug("Request to get all Produits");
-        return produitRepository.findAll(pageable)
-            .map(produitMapper::toDto);
+        return produitRepository.findAll()
+            .stream().map(produitMapper::toDto).collect(Collectors.toList());
     }
 
 
@@ -80,5 +82,17 @@ public class ProduitService {
     public void delete(Long id) {
         log.debug("Request to delete Produit : {}", id);
         produitRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProduitDTO> findWithCriteria(Pageable pageable,ProduitDTO produitDTO) {
+        return produitRepository.findWithCriteria(pageable,produitDTO.getCode(),produitDTO.getLibelle(),produitDTO.getCategorieId(),produitDTO.getClassificationId()).map(ProduitDTO::new);
+    }
+
+    public void deleteProduitById(Long id) {
+        produitRepository.findById(id).ifPresent(client -> {
+            produitRepository.deleteById(id);
+            log.debug("Deleted User: {}", client);
+        });
     }
 }

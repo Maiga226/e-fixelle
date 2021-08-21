@@ -13,7 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "produit")
-public class Produit implements Serializable {
+public class Produit extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +34,9 @@ public class Produit implements Serializable {
     @Column(name = "hs_code")
     private String hsCode;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @OneToMany(mappedBy = "produit")
     private Set<PrixProduit> prixProduits = new HashSet<>();
 
@@ -52,6 +55,15 @@ public class Produit implements Serializable {
     private Classification classification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }

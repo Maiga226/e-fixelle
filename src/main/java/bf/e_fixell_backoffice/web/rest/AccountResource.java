@@ -142,6 +142,13 @@ public class AccountResource {
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
     }
 
+    // ACTIVE OU DESACTIVE UN COMPTE UTILISATEUR
+    @PutMapping(path = "/account/enable-desable")
+    public Optional<UserDTO> enableOrDesableAccount(@RequestBody UserDTO userDTO) {
+        log.info("----------- ENABLE OR DESABLE ACCOUNT----------- "+userDTO.toString());
+       return userService.enableOrDesableAccount(userDTO);
+    }
+
     /**
      * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
      *

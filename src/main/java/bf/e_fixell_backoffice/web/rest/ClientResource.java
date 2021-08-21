@@ -97,10 +97,19 @@ public class ClientResource {
      */
     @GetMapping("/clients")
     public ResponseEntity<List<ClientDTO>> getAllClients(ClientCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Clients by criteria: {}", criteria);
+        log.info("-------- REST request to get Clients by criteria --------: {}", criteria);
         Page<ClientDTO> page = clientQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+
+
+    @PostMapping("/clients/criteria")
+    public ResponseEntity<List<ClientDTO>> getAllClient(Pageable pageable,@RequestBody ClientDTO clientDTO) {
+        final Page<ClientDTO> page = clientService.getAllClient(pageable,clientDTO);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -135,9 +144,10 @@ public class ClientResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/clients/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteClientById(@PathVariable Long id) {
         log.debug("REST request to delete Client : {}", id);
-        clientService.delete(id);
+       // clientService.delete(id);
+        clientService.deleteClientById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
 }

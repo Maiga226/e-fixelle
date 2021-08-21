@@ -81,4 +81,17 @@ public class ClientService {
         log.debug("Request to delete Client : {}", id);
         clientRepository.deleteById(id);
     }
+
+
+    @Transactional(readOnly = true)
+    public Page<ClientDTO> getAllClient(Pageable pageable,ClientDTO clientDTO) {
+        return clientRepository.findWithCriteria(pageable,clientDTO.getNom(),clientDTO.getPrenom(),clientDTO.getRaisonSocial(),clientDTO.getIdentifiant(),clientDTO.getTelephone()).map(ClientDTO::new);
+    }
+
+    public void deleteClientById(Long id) {
+        clientRepository.findById(id).ifPresent(client -> {
+            clientRepository.deleteById(id);
+            log.debug("Deleted User: {}", client);
+        });
+    }
 }

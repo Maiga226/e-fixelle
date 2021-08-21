@@ -84,6 +84,7 @@ public class ClientCriteria implements Serializable, Criteria {
         return new ClientCriteria(this);
     }
 
+
     public LongFilter getId() {
         return id;
     }

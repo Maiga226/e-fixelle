@@ -1,13 +1,16 @@
 package bf.e_fixell_backoffice.service.dto;
 
 import java.io.Serializable;
+import java.time.Instant;
+
+import bf.e_fixell_backoffice.domain.Client;
 import bf.e_fixell_backoffice.domain.enumeration.TypePersonne;
 
 /**
  * A DTO for the {@link bf.e_fixell_backoffice.domain.Client} entity.
  */
 public class ClientDTO implements Serializable {
-    
+
     private Long id;
 
     private String nom;
@@ -24,7 +27,43 @@ public class ClientDTO implements Serializable {
 
     private TypePersonne typePersonne;
 
-    
+    private String createdBy;
+
+    private Instant createdDate;
+
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate;
+
+    private boolean deleted;
+
+    public ClientDTO() {
+    }
+
+    public ClientDTO(Client client) {
+        this.id = client.getId();
+        this.nom = client.getNom();
+        this.prenom = client.getPrenom();
+        this.raisonSocial = client.getRaisonSocial();
+        this.adresse = client.getAdresse();
+        this.telephone = client.getTelephone();
+        this.identifiant = client.getIdentifiant();
+        this.typePersonne = client.getTypePersonne();
+        this.createdBy = client.getCreatedBy();
+        this.createdDate = client.getCreatedDate();
+        this.lastModifiedBy = client.getLastModifiedBy();
+        this.lastModifiedDate = client.getLastModifiedDate();
+        this.deleted = client.getDeleted();
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }
@@ -89,6 +128,38 @@ public class ClientDTO implements Serializable {
         this.typePersonne = typePersonne;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -106,18 +177,22 @@ public class ClientDTO implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "ClientDTO{" +
-            "id=" + getId() +
-            ", nom='" + getNom() + "'" +
-            ", prenom='" + getPrenom() + "'" +
-            ", raisonSocial='" + getRaisonSocial() + "'" +
-            ", adresse='" + getAdresse() + "'" +
-            ", telephone='" + getTelephone() + "'" +
-            ", identifiant='" + getIdentifiant() + "'" +
-            ", typePersonne='" + getTypePersonne() + "'" +
-            "}";
+            "id=" + id +
+            ", nom='" + nom + '\'' +
+            ", prenom='" + prenom + '\'' +
+            ", raisonSocial='" + raisonSocial + '\'' +
+            ", adresse='" + adresse + '\'' +
+            ", telephone='" + telephone + '\'' +
+            ", identifiant='" + identifiant + '\'' +
+            ", typePersonne=" + typePersonne +
+            ", createdBy='" + createdBy + '\'' +
+            ", createdDate=" + createdDate +
+            ", lastModifiedBy='" + lastModifiedBy + '\'' +
+            ", lastModifiedDate=" + lastModifiedDate +
+            ", deleted=" + deleted +
+            '}';
     }
 }

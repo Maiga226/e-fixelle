@@ -64,6 +64,7 @@ public class ClientQueryService extends QueryService<Client> {
     public Page<ClientDTO> findByCriteria(ClientCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Client> specification = createSpecification(criteria);
+
         return clientRepository.findAll(specification, page)
             .map(clientMapper::toDto);
     }

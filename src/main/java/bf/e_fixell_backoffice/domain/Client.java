@@ -14,7 +14,7 @@ import bf.e_fixell_backoffice.domain.enumeration.TypePersonne;
  */
 @Entity
 @Table(name = "client")
-public class Client implements Serializable {
+public class Client extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,6 +45,9 @@ public class Client implements Serializable {
     @Column(name = "type_personne")
     private TypePersonne typePersonne;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @OneToMany(mappedBy = "client")
     private Set<Commande> commandes = new HashSet<>();
 
@@ -52,6 +55,16 @@ public class Client implements Serializable {
     private Set<Vente> ventes = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }
@@ -218,18 +231,20 @@ public class Client implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Client{" +
-            "id=" + getId() +
-            ", nom='" + getNom() + "'" +
-            ", prenom='" + getPrenom() + "'" +
-            ", raisonSocial='" + getRaisonSocial() + "'" +
-            ", adresse='" + getAdresse() + "'" +
-            ", telephone='" + getTelephone() + "'" +
-            ", identifiant='" + getIdentifiant() + "'" +
-            ", typePersonne='" + getTypePersonne() + "'" +
-            "}";
+            "id=" + id +
+            ", nom='" + nom + '\'' +
+            ", prenom='" + prenom + '\'' +
+            ", raisonSocial='" + raisonSocial + '\'' +
+            ", adresse='" + adresse + '\'' +
+            ", telephone='" + telephone + '\'' +
+            ", identifiant='" + identifiant + '\'' +
+            ", typePersonne=" + typePersonne +
+            ", deleted=" + deleted +
+            ", commandes=" + commandes +
+            ", ventes=" + ventes +
+            '}';
     }
 }

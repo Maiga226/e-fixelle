@@ -38,11 +38,12 @@ public class FicheTechniqueService {
      * @param ficheTechniqueDTO the entity to save.
      * @return the persisted entity.
      */
-    public FicheTechniqueDTO save(FicheTechniqueDTO ficheTechniqueDTO) {
+    public FicheTechnique save(FicheTechniqueDTO ficheTechniqueDTO) {
         log.debug("Request to save FicheTechnique : {}", ficheTechniqueDTO);
         FicheTechnique ficheTechnique = ficheTechniqueMapper.toEntity(ficheTechniqueDTO);
-        ficheTechnique = ficheTechniqueRepository.save(ficheTechnique);
-        return ficheTechniqueMapper.toDto(ficheTechnique);
+        return ficheTechniqueRepository.save(ficheTechnique);
+       /* ficheTechnique = ficheTechniqueRepository.save(ficheTechnique);
+        return ficheTechniqueMapper.toDto(ficheTechnique);*/
     }
 
     /**

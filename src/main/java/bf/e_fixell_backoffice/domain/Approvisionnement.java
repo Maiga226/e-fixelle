@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "approvisionnement")
-public class Approvisionnement implements Serializable {
+public class Approvisionnement extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +36,9 @@ public class Approvisionnement implements Serializable {
     @Column(name = "montant", precision = 21, scale = 2)
     private BigDecimal montant;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @OneToMany(mappedBy = "approvisionnement")
     private Set<Transaction> transactions = new HashSet<>();
 
@@ -50,6 +53,14 @@ public class Approvisionnement implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getCode() {
@@ -159,15 +170,17 @@ public class Approvisionnement implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Approvisionnement{" +
-            "id=" + getId() +
-            ", code='" + getCode() + "'" +
-            ", libelle='" + getLibelle() + "'" +
-            ", date='" + getDate() + "'" +
-            ", montant=" + getMontant() +
-            "}";
+            "id=" + id +
+            ", code='" + code + '\'' +
+            ", libelle='" + libelle + '\'' +
+            ", date=" + date +
+            ", montant=" + montant +
+            ", deleted=" + deleted +
+            ", transactions=" + transactions +
+            ", fournisseur=" + fournisseur +
+            '}';
     }
 }

@@ -1,5 +1,6 @@
 package bf.e_fixell_backoffice.web.rest;
 
+import bf.e_fixell_backoffice.domain.FicheTechnique;
 import bf.e_fixell_backoffice.service.FicheTechniqueService;
 import bf.e_fixell_backoffice.web.rest.errors.BadRequestAlertException;
 import bf.e_fixell_backoffice.service.dto.FicheTechniqueDTO;
@@ -56,12 +57,12 @@ public class FicheTechniqueResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/fiche-techniques")
-    public ResponseEntity<FicheTechniqueDTO> createFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
+    public ResponseEntity<FicheTechnique> createFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
         log.debug("REST request to save FicheTechnique : {}", ficheTechniqueDTO);
         if (ficheTechniqueDTO.getId() != null) {
             throw new BadRequestAlertException("A new ficheTechnique cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        FicheTechniqueDTO result = ficheTechniqueService.save(ficheTechniqueDTO);
+        FicheTechnique result = ficheTechniqueService.save(ficheTechniqueDTO);
         return ResponseEntity.created(new URI("/api/fiche-techniques/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -77,12 +78,12 @@ public class FicheTechniqueResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/fiche-techniques")
-    public ResponseEntity<FicheTechniqueDTO> updateFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
+    public ResponseEntity<FicheTechnique> updateFicheTechnique(@RequestBody FicheTechniqueDTO ficheTechniqueDTO) throws URISyntaxException {
         log.debug("REST request to update FicheTechnique : {}", ficheTechniqueDTO);
         if (ficheTechniqueDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        FicheTechniqueDTO result = ficheTechniqueService.save(ficheTechniqueDTO);
+        FicheTechnique result = ficheTechniqueService.save(ficheTechniqueDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, ficheTechniqueDTO.getId().toString()))
             .body(result);

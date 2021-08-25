@@ -1,17 +1,23 @@
 package bf.e_fixell_backoffice.service.dto;
 
+import bf.e_fixell_backoffice.domain.Caracteristique;
+
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A DTO for the {@link bf.e_fixell_backoffice.domain.FicheTechnique} entity.
  */
 public class FicheTechniqueDTO implements Serializable {
-    
+
     private Long id;
 
     private String libelle;
 
-    
+    private Set<Caracteristique> caracteristiques;
+
+
     public Long getId() {
         return id;
     }
@@ -26,6 +32,14 @@ public class FicheTechniqueDTO implements Serializable {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public Set<Caracteristique> getCaracteristiques() {
+        return caracteristiques;
+    }
+
+    public void setCaracteristiques(Set<Caracteristique> caracteristiques) {
+        this.caracteristiques = caracteristiques;
     }
 
     @Override

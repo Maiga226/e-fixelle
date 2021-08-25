@@ -3,6 +3,9 @@ package bf.e_fixell_backoffice.service.dto;
 import java.time.Instant;
 import java.io.Serializable;
 import java.math.BigDecimal;
+
+import bf.e_fixell_backoffice.domain.FicheTechnique;
+import bf.e_fixell_backoffice.domain.PrixProduit;
 import bf.e_fixell_backoffice.domain.enumeration.TypeTransaction;
 import bf.e_fixell_backoffice.domain.enumeration.Etat;
 
@@ -10,7 +13,7 @@ import bf.e_fixell_backoffice.domain.enumeration.Etat;
  * A DTO for the {@link bf.e_fixell_backoffice.domain.Transaction} entity.
  */
 public class TransactionDTO implements Serializable {
-    
+
     private Long id;
 
     private String code;
@@ -39,7 +42,29 @@ public class TransactionDTO implements Serializable {
     private Long livraisonId;
 
     private Long venteId;
-    
+
+    private FicheTechnique ficheTechnique;
+
+    public PrixProduit getPrixProduit() {
+        return prixProduit;
+    }
+
+    public void setPrixProduit(PrixProduit prixProduit) {
+        this.prixProduit = prixProduit;
+    }
+
+    private PrixProduit prixProduit;
+
+
+
+    public FicheTechnique getFicheTechnique() {
+        return ficheTechnique;
+    }
+
+    public void setFicheTechnique(FicheTechnique ficheTechnique) {
+        this.ficheTechnique = ficheTechnique;
+    }
+
     public Long getId() {
         return id;
     }

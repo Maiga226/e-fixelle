@@ -3,12 +3,13 @@ package bf.e_fixell_backoffice.service.dto;
 import java.time.Instant;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * A DTO for the {@link bf.e_fixell_backoffice.domain.Approvisionnement} entity.
  */
 public class ApprovisionnementDTO implements Serializable {
-    
+
     private Long id;
 
     private String code;
@@ -19,9 +20,69 @@ public class ApprovisionnementDTO implements Serializable {
 
     private BigDecimal montant;
 
+    private String createdBy;
+
+    private Instant createdDate;
+
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate;
+
+    private boolean deleted;
+
 
     private Long fournisseurId;
-    
+
+    List<TransactionDTO> transactions;
+
+    public List<TransactionDTO> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<TransactionDTO> transactions) {
+        this.transactions = transactions;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }
@@ -87,16 +148,21 @@ public class ApprovisionnementDTO implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "ApprovisionnementDTO{" +
-            "id=" + getId() +
-            ", code='" + getCode() + "'" +
-            ", libelle='" + getLibelle() + "'" +
-            ", date='" + getDate() + "'" +
-            ", montant=" + getMontant() +
-            ", fournisseurId=" + getFournisseurId() +
-            "}";
+            "id=" + id +
+            ", code='" + code + '\'' +
+            ", libelle='" + libelle + '\'' +
+            ", date=" + date +
+            ", montant=" + montant +
+            ", createdBy='" + createdBy + '\'' +
+            ", createdDate=" + createdDate +
+            ", lastModifiedBy='" + lastModifiedBy + '\'' +
+            ", lastModifiedDate=" + lastModifiedDate +
+            ", deleted=" + deleted +
+            ", fournisseurId=" + fournisseurId +
+            ", transactions=" + transactions +
+            '}';
     }
 }

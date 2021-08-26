@@ -123,7 +123,7 @@ public class CategorieResource {
      */
     @GetMapping("/categories/{id}")
     public ResponseEntity<CategorieDTO> getCategorie(@PathVariable Long id) {
-        log.debug("REST request to get Categorie : {}", id);
+        log.debug("REST request to get Categorie test : {}", id);
         Optional<CategorieDTO> categorieDTO = categorieService.findOne(id);
         return ResponseUtil.wrapOrNotFound(categorieDTO);
     }

@@ -136,7 +136,7 @@ public class CategorieResource {
      */
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategorie(@PathVariable Long id) {
-        log.debug("REST request to delete Categorie : {}", id);
+        log.debug("REST request to delete Categorie--- : {}", id);
         categorieService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
     }
